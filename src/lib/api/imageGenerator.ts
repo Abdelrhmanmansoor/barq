@@ -35,19 +35,26 @@ class ImageGeneratorClient {
         return { success: false, error: 'No image provided.' };
       }
 
-      // Build image_url: pass Blob directly — fal.subscribe auto-uploads it
-      const imageBlob = params.image
-        ? new Blob([Buffer.from(params.image, 'base64')], { type: params.imageType ?? 'image/jpeg' })
-        : null;
+      // Step 1: upload image to fal.ai storage → get a real https:// URL
+      let hostedUrl: string;
+      if (params.imageUrl && params.imageUrl.startsWith('http')) {
+        hostedUrl = params.imageUrl;
+      } else {
+        const buffer = Buffer.from(params.image!, 'base64');
+        const blob = new Blob([buffer], { type: params.imageType ?? 'image/jpeg' });
+        hostedUrl = await fal.storage.upload(blob);
+      }
 
+      // Step 2: call the model with image_urls (array of strings, as per API docs)
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await fal.subscribe(FAL_MODEL as any, {
         input: {
           prompt:        params.prompt,
-          image_url:     imageBlob ?? params.imageUrl,   // SDK uploads Blob automatically
+          image_urls:    [hostedUrl],
           aspect_ratio:  '3:4',
           num_images:    1,
           output_format: 'jpeg',
+          resolution:    '1K',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } as any,
       }) as { data?: { images?: { url: string }[] }; requestId?: string };
