@@ -12,6 +12,18 @@ import {
 /* ── Banner images with natural dimensions captured on load ── */
 type BannerInfo = { w: number; h: number };
 
+/* ── Loading messages ── */
+const LOADING_MSGS = [
+  'يا رب تطلع حلوة 🤲',
+  'الذكاء الاصطناعي شغّال بكل طاقته ⚡',
+  'أبشر، ما يخيب الظن 😄',
+  'شوي شوي، كل شي بوقته 🕐',
+  'عم يرسم وجهك بالذهب ✨',
+  'جاهز تعرضها على أهلك؟ 😏',
+  'خلّها تشتغل، النتيجة تستاهل 🎨',
+  'أحسن من أي مصمم والله 💪',
+];
+
 import { useAppStore } from '@/lib/store';
 import { imageGenerator } from '@/lib/api/imageGenerator';
 import PaymentModal, { PricingTier } from '@/components/PaymentModal';
@@ -50,12 +62,20 @@ export default function Home() {
   const [showPayment, setShowPayment]     = useState(false);
   const [banner1, setBanner1]             = useState<BannerInfo | null>(null);
   const [banner2, setBanner2]             = useState<BannerInfo | null>(null);
+  const [loadingMsgIdx, setLoadingMsgIdx] = useState(0);
   const fileInputRef                      = useRef<HTMLInputElement>(null);
   const stats                             = getStats();
 
   useEffect(() => {
     if (!user) setUser({ id: crypto.randomUUID(), attemptsUsed: 0, isPremium: false });
   }, [user, setUser]);
+
+  useEffect(() => {
+    if (!isGenerating) return;
+    setLoadingMsgIdx(0);
+    const id = setInterval(() => setLoadingMsgIdx(i => (i + 1) % LOADING_MSGS.length), 2200);
+    return () => clearInterval(id);
+  }, [isGenerating]);
 
   const detectLanguage = (t: string): 'ar' | 'en' => /[\u0600-\u06FF]/.test(t) ? 'ar' : 'en';
 
@@ -246,7 +266,7 @@ export default function Home() {
                   className={`hero-tpl${activePreset === p.id ? ' active' : ''}`}
                   onClick={() => setActivePreset(p.id)}
                 >
-                  <img src={p.img} alt={p.name} />
+                  <img src={p.img} alt={p.name} loading="lazy" />
                   <div className="hero-tpl-overlay" />
                   <div className="hero-tpl-check"><CheckCircle2 size={11} /></div>
                   <div className="hero-tpl-label">{p.name}</div>
@@ -511,7 +531,9 @@ export default function Home() {
             <Wand2 size={32} strokeWidth={1.5} color="var(--blue)" />
           </div>
           <p style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text)', margin: 0 }}>جارٍ توليد تهنئتك...</p>
-          <p style={{ fontSize: '.88rem', color: 'var(--text-m)', margin: 0 }}>الذكاء الاصطناعي يعمل بكل قوته</p>
+          <p key={loadingMsgIdx} style={{ fontSize: '.95rem', color: 'var(--blue-l)', margin: 0, animation: 'fadeMsg .4s ease' }}>
+            {LOADING_MSGS[loadingMsgIdx]}
+          </p>
           <div className="loader-progress-wrap">
             <div className="loader-bar" />
           </div>

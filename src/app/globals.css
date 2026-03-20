@@ -855,6 +855,10 @@ body {
   80%  { width: 84%; }
   100% { width: 94%; }
 }
+@keyframes fadeMsg {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
 
 /* ── Result section ── */
 .result-section {
