@@ -280,6 +280,7 @@ export default function Home() {
                   key={p.id}
                   className={`hero-tpl${activePreset === p.id ? ' active' : ''}`}
                   onClick={() => setActivePreset(p.id)}
+                  onTouchStart={() => setActivePreset(p.id)}
                 >
                   <img src={p.img} alt={p.name} loading="lazy" />
                   <div className="hero-tpl-overlay" />
@@ -358,6 +359,7 @@ export default function Home() {
               key={p.id}
               className={`preset-card${activePreset === p.id ? ' active' : ''}`}
               onClick={() => setActivePreset(p.id)}
+              onTouchStart={() => setActivePreset(p.id)}
             >
               <img src={p.img} alt={p.name} />
               <div className="preset-overlay" />
