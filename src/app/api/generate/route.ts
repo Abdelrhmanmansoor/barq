@@ -10,7 +10,7 @@ import { emailService } from '@/lib/email/resend';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, imageData, language = 'ar', email, sendEmail = false } = body;
+    const { name, imageData, language = 'ar', preset = 1, email, sendEmail = false } = body;
 
     // Validate input
     if (!name || !imageData) {
@@ -20,11 +20,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Map preset ID → style
+    const styleMap: Record<number, 'cinematic' | 'artistic' | 'minimalist' | 'elegant'> = {
+      1: 'cinematic',
+      2: 'elegant',
+      3: 'minimalist',
+      4: 'cinematic',
+      5: 'artistic',
+      6: 'elegant',
+    };
+    const style = styleMap[preset] ?? 'cinematic';
+
     // Generate prompt parameters
     const promptParams = generatePromptParams({
       name,
       language,
-      style: 'cinematic',
+      style,
       includePatterns: true,
     });
 

@@ -147,8 +147,6 @@ export default function Home() {
     finally { toast.dismiss(); }
   };
 
-  /* duplicated presets for seamless loop */
-  const sliderPresets = [...PRESETS, ...PRESETS];
 
   return (
     <>
@@ -174,10 +172,29 @@ export default function Home() {
 
       {/* ── HERO ── */}
       <section id="hero">
-        <div className="hero-orb" />
-        <div className="hero-orb-2" />
+        {/* Background: two images side by side, darkened */}
+        <div className="hero-bg">
+          <div className="hero-bg-panel">
+            <img
+              src="/Saudi_family_celebrating_202603200328.jpeg"
+              alt=""
+              onLoad={e => { const t = e.currentTarget; setBanner1({ w: t.naturalWidth, h: t.naturalHeight }); }}
+            />
+            {banner1 && <span className="hero-dim-tag">{banner1.w} × {banner1.h} px</span>}
+          </div>
+          <div className="hero-bg-panel">
+            <img
+              src="/Saudi_family_celebrating_202603200325.jpeg"
+              alt=""
+              onLoad={e => { const t = e.currentTarget; setBanner2({ w: t.naturalWidth, h: t.naturalHeight }); }}
+            />
+            {banner2 && <span className="hero-dim-tag">{banner2.w} × {banner2.h} px</span>}
+          </div>
+        </div>
+
+        {/* Foreground content */}
         <div className="hero-wrap">
-          {/* Text */}
+          {/* Text — left */}
           <div>
             <div className="hero-badge">
               <Zap size={13} />
@@ -201,69 +218,41 @@ export default function Home() {
             </div>
             <div className="hero-trust">
               <div className="trust-item">
-                <span className="trust-icon"><CheckCircle2 size={14} /></span>
+                <span className="trust-icon"><CheckCircle2 size={13} /></span>
                 +500 تهنئة
               </div>
               <div className="trust-div" />
               <div className="trust-item">
-                <span className="trust-icon"><Clock size={14} /></span>
+                <span className="trust-icon"><Clock size={13} /></span>
                 48 ساعة
               </div>
               <div className="trust-div" />
               <div className="trust-item">
-                <span className="trust-icon"><Star size={14} /></span>
+                <span className="trust-icon"><Star size={13} /></span>
                 97% رضا
               </div>
             </div>
           </div>
 
-          {/* Banner Photos */}
-          <div style={{ position: 'relative' }}>
-            <div className="hero-float-badge">
-              <Users size={13} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '4px' }} />
-              +50 علامة تجارية
-            </div>
-            <div className="hero-banners">
-              {/* Banner 1 — portrait (tall) */}
-              <div className="hero-banner-card">
-                <img
-                  src="/Saudi_family_celebrating_202603200328.jpeg"
-                  alt="عائلة سعودية"
-                  onLoad={e => {
-                    const t = e.currentTarget;
-                    setBanner1({ w: t.naturalWidth, h: t.naturalHeight });
-                  }}
-                />
-                <div className="banner-overlay" />
-                {banner1 && (
-                  <span className="banner-dim-tag">{banner1.w} × {banner1.h}</span>
-                )}
-              </div>
-              {/* Banner 2 — landscape */}
-              <div className="hero-banner-card">
-                <img
-                  src="/Saudi_family_celebrating_202603200325.jpeg"
-                  alt="عائلة سعودية"
-                  onLoad={e => {
-                    const t = e.currentTarget;
-                    setBanner2({ w: t.naturalWidth, h: t.naturalHeight });
-                  }}
-                />
-                <div className="banner-overlay" />
-                {banner2 && (
-                  <span className="banner-dim-tag">{banner2.w} × {banner2.h}</span>
-                )}
-              </div>
-              {/* Third card — first preset */}
-              <div className="hcard" style={{ borderRadius: 'var(--r-lg)', overflow: 'hidden', position: 'relative', border: '1.5px solid rgba(61,107,248,.12)', boxShadow: '0 8px 32px rgba(0,0,0,.1)' }}>
-                <div className="hcard-inner" style={{ height: '210px' }}>
-                  <img src={PRESETS[3].img} alt={PRESETS[3].name} />
-                  <div className="hcard-overlay" />
-                  <div className="hcard-label">{PRESETS[3].name}</div>
+          {/* Template thumbnails — right */}
+          <div>
+            <p style={{ color: 'rgba(255,255,255,.5)', fontSize: '.78rem', fontWeight: 700, marginBottom: '.75rem', letterSpacing: '.5px', textTransform: 'uppercase' }}>
+              اختر أستايلك
+            </p>
+            <div className="hero-templates">
+              {PRESETS.map(p => (
+                <div
+                  key={p.id}
+                  className={`hero-tpl${activePreset === p.id ? ' active' : ''}`}
+                  onClick={() => setActivePreset(p.id)}
+                >
+                  <img src={p.img} alt={p.name} />
+                  <div className="hero-tpl-overlay" />
+                  <div className="hero-tpl-check"><CheckCircle2 size={11} /></div>
+                  <div className="hero-tpl-label">{p.name}</div>
                 </div>
-              </div>
+              ))}
             </div>
-            <div className="hero-float-badge2">Powered by fal.ai FLUX Dev</div>
           </div>
         </div>
       </section>
@@ -338,32 +327,30 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── PRESETS SLIDER ── */}
+      {/* ── PRESETS GRID ── */}
       <section id="presets" className="presets-section">
         <div className="presets-section-header">
           <div className="sec-tag">الأستايلات</div>
           <h2 className="sec-h">اختر أستايلك المفضل</h2>
           <p className="sec-sub">6 أستايلات فاخرة مصممة خصيصاً لعيد الفطر المبارك</p>
         </div>
-        <div className="presets-slider">
-          <div className="presets-track">
-            {sliderPresets.map((p, idx) => (
-              <div
-                key={`${p.id}-${idx}`}
-                className={`preset-card${activePreset === p.id ? ' active' : ''}`}
-                onClick={() => setActivePreset(p.id)}
-              >
-                <img src={p.img} alt={p.name} />
-                <div className="preset-overlay" />
+        <div className="presets-grid">
+          {PRESETS.map(p => (
+            <div
+              key={p.id}
+              className={`preset-card${activePreset === p.id ? ' active' : ''}`}
+              onClick={() => setActivePreset(p.id)}
+            >
+              <img src={p.img} alt={p.name} />
+              <div className="preset-overlay" />
+              {activePreset === p.id && (
                 <div className="preset-check">
                   <CheckCircle2 size={14} />
                 </div>
-                <div className="preset-content">
-                  <h4>{p.name}</h4>
-                </div>
-              </div>
-            ))}
-          </div>
+              )}
+              <div className="preset-glass-label">{p.name}</div>
+            </div>
+          ))}
         </div>
       </section>
 
