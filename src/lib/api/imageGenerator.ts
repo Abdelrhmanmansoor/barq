@@ -31,35 +31,26 @@ class ImageGeneratorClient {
 
   async generateImage(params: GenerateImageParams): Promise<GenerateImageResponse> {
     try {
-      // Step 1: get a hosted URL — nano-banana-2/edit requires https:// URLs, not base64
-      let hostedUrl: string;
-
-      if (params.imageUrl && params.imageUrl.startsWith('http')) {
-        hostedUrl = params.imageUrl;
-      } else if (params.image) {
-        // Upload base64 to fal.ai storage → get a real URL
-        const buffer = Buffer.from(params.image, 'base64');
-        const blob = new Blob([buffer], { type: params.imageType ?? 'image/jpeg' });
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        hostedUrl = await (fal.storage as any).upload(blob);
-      } else {
+      if (!params.image && !params.imageUrl) {
         return { success: false, error: 'No image provided.' };
       }
 
-      // Step 2: call nano-banana-2/edit with the hosted URL
-      const input = {
-        prompt:        params.prompt,
-        image_urls:    [hostedUrl],
-        aspect_ratio:  '3:4',
-        num_images:    1,
-        output_format: 'jpeg',
-      };
+      // Build image_url: pass Blob directly — fal.subscribe auto-uploads it
+      const imageBlob = params.image
+        ? new Blob([Buffer.from(params.image, 'base64')], { type: params.imageType ?? 'image/jpeg' })
+        : null;
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await fal.subscribe(FAL_MODEL as any, { input: input as any }) as {
-        data?: { images?: { url: string }[] };
-        requestId?: string;
-      };
+      const result = await fal.subscribe(FAL_MODEL as any, {
+        input: {
+          prompt:        params.prompt,
+          image_url:     imageBlob ?? params.imageUrl,   // SDK uploads Blob automatically
+          aspect_ratio:  '3:4',
+          num_images:    1,
+          output_format: 'jpeg',
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } as any,
+      }) as { data?: { images?: { url: string }[] }; requestId?: string };
 
       const imageUrl = result?.data?.images?.[0]?.url;
       if (!imageUrl) throw new Error('No image returned from fal.ai');
@@ -68,7 +59,7 @@ class ImageGeneratorClient {
 
     } catch (error) {
       const msg = error instanceof Error ? error.message : 'Unknown error';
-      console.error('[fal.ai]', msg);
+      console.error('[fal.ai error]', msg);
       return { success: false, error: msg };
     }
   }

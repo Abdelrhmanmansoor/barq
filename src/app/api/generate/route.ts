@@ -2,8 +2,6 @@ import { NextRequest, NextResponse } from 'next/server';
 import { imageGenerator } from '@/lib/api/imageGenerator';
 import { getEidPromptPreset } from '@/lib/ai/eidPromptPresets';
 
-export const maxDuration = 60; // allow up to 60s for fal.ai to respond
-
 /**
  * POST /api/generate
  * Body: { name, imageData, presetId?, greetingLine1?, greetingLine2?, email? }
