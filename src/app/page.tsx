@@ -534,10 +534,7 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* Payment Modal */}
-      {showPayment && (
-        <PaymentModal isOpen={showPayment} onClose={() => setShowPayment(false)} onSelectPlan={handleSelectPlan} />
-      )}
+      {/* Payment Modal removed */}
 
       {/* Loading Overlay */}
       {isGenerating && (
@@ -548,7 +545,7 @@ export default function Home() {
             <Wand2 size={32} strokeWidth={1.5} color="var(--blue)" />
           </div>
           <p style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text)', margin: 0 }}>جارٍ توليد تهنئتك...</p>
-          <p key={loadingMsgIdx} style={{ fontSize: '.95rem', color: 'var(--blue-l)', margin: 0, animation: 'fadeMsg .4s ease' }}>
+          <p key={loadingMsgIdx} style={{ fontSize: '1rem', color: '#fff', margin: 0, opacity: 0.9, animation: 'fadeMsg .4s ease' }}>
             {LOADING_MSGS[loadingMsgIdx]}
           </p>
           <div className="loader-progress-wrap">

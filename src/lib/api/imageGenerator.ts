@@ -47,17 +47,13 @@ class ImageGeneratorClient {
       }
 
       // Step 2: call nano-banana-2/edit with the hosted URL
-      const input: Record<string, unknown> = {
+      const input = {
         prompt:        params.prompt,
-        image_urls:    [hostedUrl],   // must be https:// URL
+        image_urls:    [hostedUrl],
         aspect_ratio:  '3:4',
         num_images:    1,
         output_format: 'jpeg',
-        resolution:    '1K',
       };
-      if (params.negative_prompt) {
-        input.negative_prompt = params.negative_prompt;
-      }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await fal.subscribe(FAL_MODEL as any, { input: input as any }) as {
