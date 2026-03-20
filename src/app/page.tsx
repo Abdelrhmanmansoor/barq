@@ -90,7 +90,7 @@ export default function Home() {
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, imageData: base64Image, language: detectLanguage(name), preset: activePreset }),
+        body: JSON.stringify({ name, imageData: base64Image, imageType: selectedImage!.type, presetId: activePreset }),
       });
       const data = await res.json();
       if (!res.ok || !data.success) throw new Error(data.error || 'فشل توليد الصورة');
@@ -355,9 +355,10 @@ export default function Home() {
                 </button>
               </div>
             ) : (
-              <div
+              <label
+                htmlFor="main-image-upload"
                 className="upload-zone"
-                onClick={() => fileInputRef.current?.click()}
+                style={{ cursor: 'pointer', display: 'block' }}
                 onDrop={handleDrop}
                 onDragOver={e => e.preventDefault()}
               >
@@ -368,12 +369,13 @@ export default function Home() {
                 <p className="hint">PNG, JPG حتى 10 ميجا</p>
                 <input
                   ref={fileInputRef}
+                  id="main-image-upload"
                   type="file"
                   accept="image/*"
                   style={{ display: 'none' }}
                   onChange={e => { const f = e.target.files?.[0]; if (f) handleImageSelect(f); }}
                 />
-              </div>
+              </label>
             )}
             {imageError && <p style={{ color: '#ef4444', fontSize: '.82rem', marginTop: '-.5rem', marginBottom: '1rem' }}>{imageError}</p>}
 

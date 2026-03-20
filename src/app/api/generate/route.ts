@@ -12,6 +12,7 @@ export async function POST(request: NextRequest) {
     const {
       name,
       imageData,           // base64 string of the uploaded face photo
+      imageType = 'image/jpeg', // MIME type of the uploaded image
       presetId = 1,        // which of the 7 presets to use (1–7)
       greetingLine1,
       greetingLine2,
@@ -24,23 +25,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Build the image data URL so it can be referenced in the prompt template
-    const uploadedImageUrl = `data:image/jpeg;base64,${imageData}`;
-
     // Get the selected preset and inject all variables
+    // Note: uploadedImageUrl is a placeholder — the actual image is passed via image param
     const { prompt, negativePrompt } = getEidPromptPreset(Number(presetId), {
-      uploadedImageUrl,
+      uploadedImageUrl: '[uploaded face photo]',
       recipientName:  name,
       greetingLine1,
       greetingLine2,
     });
 
-    // Send to fal.ai — uploaded image is both the identity reference
-    // AND the image_url parameter passed to FLUX Kontext
+    // Send to fal.ai — pass the raw base64 so imageGenerator uploads it to fal.ai storage
     const result = await imageGenerator.generateImage({
       prompt,
       negative_prompt: negativePrompt,
-      imageUrl: uploadedImageUrl,
+      image: imageData,
+      imageType,
     });
 
     if (!result.success) {

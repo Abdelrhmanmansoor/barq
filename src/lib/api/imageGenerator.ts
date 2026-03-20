@@ -14,6 +14,7 @@ export interface GenerateImageParams {
   prompt: string;
   negative_prompt?: string;
   image?: string;        // base64 string (no data: prefix) — the uploaded face photo
+  imageType?: string;    // MIME type of the uploaded image (e.g. 'image/jpeg')
   imageUrl?: string;     // OR a hosted URL if already available
 }
 
@@ -38,7 +39,7 @@ class ImageGeneratorClient {
       } else if (params.image) {
         // Upload base64 to fal.ai storage → get a real URL
         const buffer = Buffer.from(params.image, 'base64');
-        const blob = new Blob([buffer], { type: 'image/jpeg' });
+        const blob = new Blob([buffer], { type: params.imageType ?? 'image/jpeg' });
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         hostedUrl = await (fal.storage as any).upload(blob);
       } else {
@@ -46,7 +47,7 @@ class ImageGeneratorClient {
       }
 
       // Step 2: call nano-banana-2/edit with the hosted URL
-      const input = {
+      const input: Record<string, unknown> = {
         prompt:        params.prompt,
         image_urls:    [hostedUrl],   // must be https:// URL
         aspect_ratio:  '3:4',
@@ -54,6 +55,9 @@ class ImageGeneratorClient {
         output_format: 'jpeg',
         resolution:    '1K',
       };
+      if (params.negative_prompt) {
+        input.negative_prompt = params.negative_prompt;
+      }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const result = await fal.subscribe(FAL_MODEL as any, { input: input as any }) as {
