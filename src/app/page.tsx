@@ -257,23 +257,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ── BRANDS STRIP ── */}
-      <div className="brands-strip">
-        <div className="brands-inner">
-          {[
-            { icon: <Wand2 size={22} />, label: 'FLUX Dev' },
-            { icon: <Zap size={22} />, label: 'fal.ai' },
-            { icon: <Share2 size={22} />, label: 'Resend' },
-            { icon: <CheckCircle2 size={22} />, label: 'MyFatoorah' },
-            { icon: <Building2 size={22} />, label: 'Vercel' },
-          ].map(b => (
-            <div key={b.label} className="brand-item">
-              <span className="brand-icon" style={{ display: 'flex', alignItems: 'center', color: 'var(--blue-l)' }}>{b.icon}</span>
-              <span>{b.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ── MARQUEE ── */}
       <div className="marquee-section">
@@ -451,27 +434,6 @@ export default function Home() {
         </section>
       )}
 
-      {/* ── NUMBERS ── */}
-      <section id="numbers" className="numbers-section">
-        <div style={{ textAlign: 'center', position: 'relative' }}>
-          <div className="sec-tag">أرقامنا</div>
-          <h2 className="sec-h">أرقام تتحدث عن نفسها</h2>
-        </div>
-        <div className="numbers-grid">
-          {[
-            { Icon: Users,     val: '+500', label: 'تهنئة تم توليدها' },
-            { Icon: Clock,     val: '48h',  label: 'أقصى وقت للتسليم' },
-            { Icon: ThumbsUp,  val: '97%',  label: 'معدل الرضا' },
-            { Icon: Building2, val: '+50',  label: 'علامة تجارية' },
-          ].map(n => (
-            <div key={n.val} className="number-card">
-              <n.Icon size={28} strokeWidth={1.5} style={{ opacity: .7, marginBottom: '.5rem' }} />
-              <span className="number-val">{n.val}</span>
-              <span className="number-label">{n.label}</span>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* ── FOOTER ── */}
       <footer className="site-footer">
