@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 import {
-  CheckCircle2, Star, Camera, Palette, PenLine, Wand2,
+  Zap, CheckCircle2, Star, Camera, Palette, PenLine, Wand2,
   Upload, Download, Share2, RotateCcw, Users, Clock, ThumbsUp, Building2,
   ChevronLeft,
 } from 'lucide-react';
