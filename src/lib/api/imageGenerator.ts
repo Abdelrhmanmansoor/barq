@@ -1,7 +1,7 @@
 import { fal } from '@fal-ai/client';
 
-// fal-ai/nano-banana-pro/edit — Gemini Flash image editing, supports resolution param
-const FAL_MODEL = 'fal-ai/nano-banana-pro/edit';
+// fal-ai/nano-banana-2/edit — Gemini 3.1 Flash image editing, $0.08/image
+const FAL_MODEL = 'fal-ai/nano-banana-2/edit';
 
 fal.config({ credentials: process.env.FAL_KEY });
 
@@ -61,7 +61,14 @@ class ImageGeneratorClient {
       return { success: true, imageUrl, requestId: result.requestId };
 
     } catch (error) {
-      const msg = error instanceof Error ? error.message : 'Unknown error';
+      let msg = 'Unknown error';
+      if (error instanceof Error) {
+        msg = error.message;
+        // Log full error body from fal.ai if available
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const extra = (error as any).body ?? (error as any).response ?? (error as any).cause;
+        if (extra) console.error('[fal.ai] full error:', JSON.stringify(extra));
+      }
       console.error('[fal.ai error]', msg);
       return { success: false, error: msg };
     }
