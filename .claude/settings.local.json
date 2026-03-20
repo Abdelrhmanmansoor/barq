@@ -8,7 +8,8 @@
       "Bash(for f:*)",
       "Bash(do echo:*)",
       "Bash(done)",
-      "Bash(gh repo:*)"
+      "Bash(gh repo:*)",
+      "Bash(sort -k6,7)"
     ]
   }
 }

@@ -1,610 +1,483 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
-import { motion, AnimatePresence, useScroll, useTransform, useInView } from 'framer-motion';
+import { useState, useRef } from 'react';
+import { toast } from 'react-hot-toast';
 import { useAppStore } from '@/lib/store';
 import { imageGenerator } from '@/lib/api/imageGenerator';
-import { toast } from 'react-hot-toast';
-import ImageUploader from '@/components/ImageUploader';
-import NameInput from '@/components/NameInput';
-import GenerateButton from '@/components/GenerateButton';
-import ResultPreview from '@/components/ResultPreview';
 import PaymentModal, { PricingTier } from '@/components/PaymentModal';
-import { 
-  Sparkles, 
-  Zap, 
-  Shield, 
-  Image as ImageIcon,
-  Palette,
-  Wand2,
-  Clock,
-  CheckCircle2,
-  ArrowRight,
-  Star,
-  Rocket,
-  Sparkles as SparklesIcon,
-  Layers,
-  Command
-} from 'lucide-react';
+
+/* ── Presets data ── */
+const PRESETS = [
+  { id: 1, name: 'سينمائي فاخر',  icon: '🌙', img: '/templetes/Gemini_Generated_Image_64m1dc64m1dc64m1.png' },
+  { id: 2, name: 'أنثوي ناعم',    icon: '🌸', img: '/templetes/Gemini_Generated_Image_aoh24raoh24raoh2.png' },
+  { id: 3, name: 'عصري راقٍ',     icon: '✨', img: '/templetes/Gemini_Generated_Image_bjb5ovbjb5ovbjb5.png' },
+  { id: 4, name: 'صباح العيد',    icon: '🌅', img: '/templetes/Gemini_Generated_Image_nz00j8nz00j8nz00.png' },
+  { id: 5, name: 'فناء العيد',    icon: '🌺', img: '/templetes/Gemini_Generated_Image_pxnj80pxnj80pxnj.png' },
+  { id: 6, name: 'مجلس دافئ',    icon: '🏮', img: '/templetes/Gemini_Generated_Image_py5xylpy5xylpy5x.png' },
+];
+
+/* ── Marquee items ── */
+const TICKER_A = ['صنع تهنئتك الآن', 'عيد مبارك ✦', 'تهنئة فاخرة بالذكاء الاصطناعي', 'برق ستديو ⚡'];
+const TICKER_B = ['تقبل الله طاعاتكم', 'كل عام وأنتم بخير', 'عيد الفطر المبارك', 'أجمل التهاني ✦'];
 
 export default function Home() {
-  const {
-    user,
-    isGenerating,
-    generatedImage,
-    setUser,
-    setGenerating,
-    setGeneratedImage,
-    setError,
-    incrementAttempt,
-    getStats,
-  } = useAppStore();
+  const { user, isGenerating, generatedImage, setUser, setGenerating, setGeneratedImage, setError, incrementAttempt, getStats } = useAppStore();
 
-  const [name, setName] = useState('');
+  const [name, setName]                   = useState('');
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [nameError, setNameError] = useState<string>('');
-  const [imageError, setImageError] = useState<string>('');
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const stats = getStats();
+  const [previewUrl, setPreviewUrl]       = useState<string | null>(null);
+  const [activePreset, setActivePreset]   = useState<number>(1);
+  const [nameError, setNameError]         = useState('');
+  const [imageError, setImageError]       = useState('');
+  const [showPayment, setShowPayment]     = useState(false);
+  const fileInputRef                      = useRef<HTMLInputElement>(null);
+  const stats                             = getStats();
 
-  // Initialize user session
-  useEffect(() => {
-    if (!user) {
-      setUser({
-        id: crypto.randomUUID(),
-        attemptsUsed: 0,
-        isPremium: false,
-      });
-    }
-  }, [user, setUser]);
+  /* init user */
+  if (!user) {
+    setUser({ id: crypto.randomUUID(), attemptsUsed: 0, isPremium: false });
+  }
 
-  // Validate inputs
-  const validateInputs = (): boolean => {
-    let isValid = true;
+  const detectLanguage = (text: string): 'ar' | 'en' =>
+    /[\u0600-\u06FF]/.test(text) ? 'ar' : 'en';
 
-    if (!name.trim()) {
-      setNameError('Please enter your name');
-      isValid = false;
-    } else {
-      setNameError('');
-    }
-
-    if (!selectedImage) {
-      setImageError('Please upload a photo');
-      isValid = false;
-    } else {
-      setImageError('');
-    }
-
-    return isValid;
-  };
-
-  // Handle image selection
   const handleImageSelect = (file: File) => {
     setSelectedImage(file);
     setImageError('');
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
   };
 
-  // Handle image clear
   const handleImageClear = () => {
     setSelectedImage(null);
+    setPreviewUrl(null);
+    if (fileInputRef.current) fileInputRef.current.value = '';
   };
 
-  // Detect language (Arabic or English)
-  const detectLanguage = (text: string): 'ar' | 'en' => {
-    const arabicRegex = /[\u0600-\u06FF]/;
-    return arabicRegex.test(text) ? 'ar' : 'en';
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) handleImageSelect(file);
   };
 
-  // Handle generate
   const handleGenerate = async () => {
-    if (!validateInputs()) {
-      toast.error('Please fill in all fields');
-      return;
-    }
+    let valid = true;
+    if (!name.trim()) { setNameError('الرجاء إدخال الاسم'); valid = false; } else setNameError('');
+    if (!selectedImage) { setImageError('الرجاء رفع صورة'); valid = false; } else setImageError('');
+    if (!valid) return;
 
     if (stats.remainingFreeAttempts <= 0 && !stats.premiumUnlocked) {
-      setShowPaymentModal(true);
+      setShowPayment(true);
       return;
     }
 
     setGenerating(true);
     setError(null);
-
     try {
       const base64Image = await imageGenerator.fileToBase64(selectedImage!);
-
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name,
-          imageData: base64Image,
-          language: detectLanguage(name),
-        }),
+        body: JSON.stringify({ name, imageData: base64Image, language: detectLanguage(name), preset: activePreset }),
       });
-
       const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.error || 'Failed to generate image');
-      }
-
+      if (!response.ok || !data.success) throw new Error(data.error || 'فشل توليد الصورة');
       setGeneratedImage(data.imageUrl);
       incrementAttempt();
-      toast.success('Eid greeting generated successfully!');
-
+      toast.success('تم توليد التهنئة بنجاح! 🎉');
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'An error occurred';
-      setError(errorMessage);
-      toast.error(errorMessage);
+      const msg = error instanceof Error ? error.message : 'حدث خطأ ما';
+      setError(msg);
+      toast.error(msg);
     } finally {
       setGenerating(false);
     }
   };
 
-  // Handle download
   const handleDownload = async () => {
     if (!generatedImage) return;
-
     try {
-      const response = await fetch(generatedImage);
-      const blob = await response.blob();
+      const res = await fetch(generatedImage);
+      const blob = await res.blob();
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
-      a.href = url;
-      a.download = `eid-greeting-${name}.png`;
-      document.body.appendChild(a);
-      a.click();
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-      toast.success('Image downloaded!');
-    } catch (error) {
-      toast.error('Failed to download image');
-    }
+      a.href = url; a.download = `eid-greeting-${name}.png`;
+      document.body.appendChild(a); a.click();
+      window.URL.revokeObjectURL(url); document.body.removeChild(a);
+      toast.success('تم التحميل!');
+    } catch { toast.error('فشل التحميل'); }
   };
 
-  // Handle share
   const handleShare = async () => {
     if (!generatedImage) return;
-
     if (navigator.share) {
-      try {
-        await navigator.share({
-          title: 'Eid Greeting',
-          text: `Happy Eid from ${name}!`,
-          url: window.location.href,
-        });
-      } catch (error) {
-        toast.error('Failed to share');
-      }
+      await navigator.share({ title: 'تهنئة العيد', text: `عيد مبارك من ${name}!`, url: window.location.href });
     } else {
       navigator.clipboard.writeText(window.location.href);
-      toast.success('Link copied to clipboard!');
+      toast.success('تم نسخ الرابط!');
     }
   };
 
-  // Handle retry
   const handleRetry = () => {
     setGeneratedImage(null);
     setName('');
     setSelectedImage(null);
+    setPreviewUrl(null);
     setNameError('');
     setImageError('');
   };
 
-  // Handle payment plan selection
   const handleSelectPlan = async (tier: PricingTier) => {
-    if (!user) {
-      toast.error('User session not initialized');
-      return;
-    }
-
+    if (!user) return;
     try {
-      toast.loading('Initiating payment...');
-
+      toast.loading('جارٍ تهيئة الدفع...');
       const response = await fetch('/api/payment/initiate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          amount: tier.price,
-          currency: tier.currency,
+          amount: tier.price, currency: tier.currency,
           customerEmail: user.email || 'user@example.com',
-          customerName: name || 'User',
-          userId: user.id,
+          customerName: name || 'User', userId: user.id,
           language: detectLanguage(name),
         }),
       });
-
       const data = await response.json();
-
-      if (data.success && data.paymentUrl) {
-        window.location.href = data.paymentUrl;
-      } else {
-        toast.error(data.error || 'Failed to initiate payment');
-      }
-    } catch (error) {
-      toast.error('Payment initialization failed');
-    } finally {
-      toast.dismiss();
-    }
+      if (data.success && data.paymentUrl) window.location.href = data.paymentUrl;
+      else toast.error(data.error || 'فشل بدء عملية الدفع');
+    } catch { toast.error('فشل بدء عملية الدفع'); }
+    finally { toast.dismiss(); }
   };
 
   return (
-    <main className="min-h-screen deep-bg relative overflow-hidden">
-      {/* Animated Background Orbs */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden">
-        <motion.div
-          animate={{
-            x: [0, 100, 0],
-            y: [0, -50, 0],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{
-            duration: 20,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-[10%] right-[15%] w-96 h-96 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            x: [0, -100, 0],
-            y: [0, 50, 0],
-            scale: [1.2, 1, 1.2],
-          }}
-          transition={{
-            duration: 25,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute bottom-[20%] left-[10%] w-[30rem] h-[30rem] bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl"
-        />
-        <motion.div
-          animate={{
-            scale: [1, 1.5, 1],
-            opacity: [0.1, 0.2, 0.1],
-          }}
-          transition={{
-            duration: 10,
-            repeat: Infinity,
-            ease: 'easeInOut',
-          }}
-          className="absolute top-[40%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[40rem] bg-gradient-to-br from-indigo-400/10 to-purple-400/10 rounded-full blur-3xl"
-        />
-      </div>
-
-      <div className="relative z-10">
-        {/* Hero Section */}
-        <section className="pt-32 pb-24 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 1, ease: 'easeOut' }}
-              className="text-center max-w-5xl mx-auto mb-20"
-            >
-              {/* Badge */}
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.2, duration: 0.5 }}
-                className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 mb-12 backdrop-blur-sm"
+    <>
+      {/* ── NAVBAR ── */}
+      <nav className="nav-wrap">
+        <div className="nav-inner">
+          <a href="#" className="nav-logo">⚡ برق ستديو</a>
+          <ul className="nav-links">
+            <li><a href="#how">كيف يعمل</a></li>
+            <li><a href="#presets">الأستايلات</a></li>
+            <li><a href="#numbers">أرقامنا</a></li>
+            <li><a href="#form">ابدأ الآن</a></li>
+            <li>
+              <a
+                href="https://wa.me/96500000000"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="nav-cta"
               >
-                <motion.div
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'linear' }}
-                >
-                  <Sparkles className="w-5 h-5 text-purple-400" />
-                </motion.div>
-                <span className="text-base font-semibold text-white/90">AI-Powered Eid Greetings</span>
-                <Star className="w-4 h-4 text-yellow-400" />
-              </motion.div>
+                تواصل معنا
+              </a>
+            </li>
+          </ul>
+        </div>
+      </nav>
 
-              {/* Main Heading */}
-              <motion.h1
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4, duration: 0.8 }}
-                className="text-6xl md:text-7xl lg:text-8xl font-bold mb-8 leading-tight"
-              >
-                <span className="block mb-2">Create Stunning</span>
-                <span className="animated-gradient-text">Eid Greetings</span>
-                <span className="block mt-2">with AI</span>
-              </motion.h1>
-
-              {/* Subheading */}
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.6, duration: 0.8 }}
-                className="text-xl md:text-2xl text-white/70 mb-12 max-w-3xl mx-auto leading-relaxed"
-              >
-                Transform your photos into beautiful, personalized Eid greeting cards using cutting-edge AI technology. Share joy with your loved ones.
-              </motion.p>
-
-              {/* CTA Buttons */}
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.8, duration: 0.8 }}
-                className="flex flex-col sm:flex-row items-center justify-center gap-5"
-              >
-                <motion.button
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => document.getElementById('generator')?.scrollIntoView({ behavior: 'smooth' })}
-                  className="relative px-8 py-4 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-2xl font-bold text-white text-lg shadow-2xl shadow-purple-500/30 overflow-hidden group"
-                >
-                  <span className="relative z-10 flex items-center gap-3">
-                    Get Started Free
-                    <Rocket className="w-5 h-5" />
-                  </span>
-                  <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="px-8 py-4 border-2 border-white/20 rounded-2xl font-bold text-white text-lg hover:bg-white/10 transition-all duration-300 backdrop-blur-sm"
-                >
-                  View Gallery
-                  <ArrowRight className="w-5 h-5 inline ml-2" />
-                </motion.button>
-              </motion.div>
-            </motion.div>
-
-            {/* Generator Section - Premium Glass Card */}
-            <motion.div
-              id="generator"
-              initial={{ opacity: 0, y: 60 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1, duration: 1 }}
-              className="max-w-4xl mx-auto"
-            >
-              <div className="glass-card rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden">
-                {/* Gradient Glow */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20 rounded-full blur-3xl" />
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-gradient-to-br from-blue-500/20 via-purple-500/20 to-pink-500/20 rounded-full blur-3xl" />
-                
-                <div className="relative z-10">
-                  <AnimatePresence mode="wait">
-                    {!generatedImage ? (
-                      <motion.div
-                        key="form"
-                        initial={{ opacity: 0, x: 30 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: -30 }}
-                        transition={{ duration: 0.5 }}
-                        className="space-y-8"
-                      >
-                        <NameInput
-                          value={name}
-                          onChange={setName}
-                          error={nameError}
-                        />
-
-                        <ImageUploader
-                          onImageSelect={handleImageSelect}
-                          onImageClear={handleImageClear}
-                          selectedImage={selectedImage}
-                          error={imageError}
-                        />
-
-                        <GenerateButton
-                          onClick={handleGenerate}
-                          isLoading={isGenerating}
-                          disabled={stats.remainingFreeAttempts <= 0 && !stats.premiumUnlocked}
-                          remainingAttempts={stats.remainingFreeAttempts}
-                        />
-
-                        <motion.div
-                          initial={{ opacity: 0 }}
-                          animate={{ opacity: 1 }}
-                          transition={{ delay: 0.3 }}
-                          className="text-center pt-6 border-t border-white/10"
-                        >
-                          <p className="text-base text-white/60">
-                            {stats.premiumUnlocked ? (
-                              <span className="text-purple-400 font-semibold flex items-center justify-center gap-2">
-                                <CheckCircle2 className="w-5 h-5" />
-                                Premium Unlocked - Unlimited Generations
-                              </span>
-                            ) : (
-                            `${stats.totalAttempts} of 2 free attempts used`
-                            )}
-                          </p>
-                        </motion.div>
-                      </motion.div>
-                    ) : (
-                      <motion.div
-                        key="result"
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        transition={{ duration: 0.5 }}
-                      >
-                        <ResultPreview
-                          imageUrl={generatedImage}
-                          onDownload={handleDownload}
-                          onShare={handleShare}
-                          onRetry={handleRetry}
-                          isLoading={isGenerating}
-                        />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </div>
-              </div>
-            </motion.div>
+      {/* ── HERO ── */}
+      <section id="hero">
+        <div className="hero-orb" />
+        <div className="hero-orb-2" />
+        <div className="hero-wrap">
+          {/* Text */}
+          <div>
+            <div className="hero-badge">⚡ هدية العيد من برق ستديو</div>
+            <h1 className="hero-h1">
+              تهنئة عيد <span className="blue">فاخرة</span><br />
+              بلمسة <span className="gold">ذهبية</span> شخصية
+            </h1>
+            <p className="hero-sub">
+              ارفع صورتك، اختر الأستايل، وخلّي الذكاء الاصطناعي يصنع لك تهنئة عيد احترافية تبهر أحبابك
+            </p>
+            <div className="hero-btns">
+              <button className="btn-primary" onClick={() => document.getElementById('form')?.scrollIntoView({ behavior: 'smooth' })}>
+                ✦ ولّد تهنئتي الآن
+              </button>
+              <button className="btn-secondary" onClick={() => document.getElementById('presets')?.scrollIntoView({ behavior: 'smooth' })}>
+                شوف الأستايلات
+              </button>
+            </div>
+            <div className="hero-trust">
+              <div className="trust-item"><span className="trust-icon">✓</span>+500 تهنئة</div>
+              <div className="trust-div" />
+              <div className="trust-item"><span className="trust-icon">⚡</span>48 ساعة</div>
+              <div className="trust-div" />
+              <div className="trust-item"><span className="trust-icon">★</span>97% رضا</div>
+            </div>
           </div>
-        </section>
 
-        {/* Features Section */}
-        <section className="py-32 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-100px' }}
-              transition={{ duration: 0.8 }}
-              className="text-center mb-20"
-            >
-              <h2 className="text-5xl md:text-6xl font-bold mb-6">
-                Why Choose <span className="gradient-text">Barq</span>
-              </h2>
-              <p className="text-xl text-white/60 max-w-2xl mx-auto">
-                Experience the future of digital greetings with our AI-powered platform
-              </p>
-            </motion.div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {[
-                {
-                  icon: <Wand2 className="w-10 h-10" />,
-                  title: 'AI-Powered Design',
-                  description: 'Our advanced AI creates stunning, unique designs tailored to your photos',
-                },
-                {
-                  icon: <Clock className="w-10 h-10" />,
-                  title: 'Instant Generation',
-                  description: 'Get beautiful greeting cards in seconds, not hours',
-                },
-                {
-                  icon: <ImageIcon className="w-10 h-10" />,
-                  title: 'High Quality Output',
-                  description: 'Download your greetings in crisp, print-ready resolution',
-                },
-                {
-                  icon: <Palette className="w-10 h-10" />,
-                  title: 'Beautiful Templates',
-                  description: 'Choose from a variety of professionally designed templates',
-                },
-                {
-                  icon: <Shield className="w-10 h-10" />,
-                  title: 'Secure & Private',
-                  description: 'Your photos are processed securely and never shared',
-                },
-                {
-                  icon: <Zap className="w-10 h-10" />,
-                  title: 'Easy to Use',
-                  description: 'No design skills needed - just upload and generate',
-                },
-              ].map((feature, index) => (
-                <motion.div
-                  key={index}
-                  initial={{ opacity: 0, y: 40 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: '-100px' }}
-                  transition={{ delay: index * 0.1, duration: 0.6 }}
-                  whileHover={{ y: -8 }}
-                  className="glass-card rounded-2xl p-8 relative overflow-hidden group"
-                >
-                  <div className="relative z-10">
-                    <div className="w-20 h-20 bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl flex items-center justify-center text-white mb-6 shadow-2xl shadow-purple-500/30 group-hover:scale-110 transition-transform duration-300">
-                      {feature.icon}
-                    </div>
-                    <h3 className="text-2xl font-bold mb-3 text-white">{feature.title}</h3>
-                    <p className="text-white/60 leading-relaxed">{feature.description}</p>
+          {/* Cards */}
+          <div style={{ position: 'relative' }}>
+            <div className="hero-float-badge">+50 علامة تجارية ✦</div>
+            <div className="hero-cards-wrap">
+              {PRESETS.slice(0, 3).map((p, i) => (
+                <div key={p.id} className="hcard">
+                  <div className="hcard-inner">
+                    <img src={p.img} alt={p.name} />
+                    <div className="hcard-overlay" />
+                    <div className="hcard-badge">{p.icon}</div>
+                    <div className="hcard-label">{p.name}</div>
                   </div>
-                  <div className="absolute inset-0 bg-gradient-to-br from-purple-500/5 via-pink-500/5 to-blue-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                </motion.div>
+                </div>
               ))}
             </div>
+            <div className="hero-float-badge2">Powered by fal.ai FLUX Dev ✦</div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── BRANDS STRIP ── */}
+      <div className="brands-strip">
+        <div className="brands-inner">
+          {[
+            { icon: '🤖', label: 'FLUX Dev' },
+            { icon: '⚡', label: 'fal.ai' },
+            { icon: '📧', label: 'Resend' },
+            { icon: '💳', label: 'MyFatoorah' },
+            { icon: '▲', label: 'Vercel' },
+          ].map(b => (
+            <div key={b.label} className="brand-item">
+              <span className="brand-icon">{b.icon}</span>
+              <span>{b.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ── MARQUEE ── */}
+      <div className="marquee-section">
+        <div className="marquee-wrap">
+          {/* Strip A - blue forward */}
+          <div className="ticker-strip strip-a">
+            <div className="ticker-inner">
+              {[...Array(4)].flatMap((_, i) =>
+                TICKER_A.map((txt, j) => (
+                  <span key={`a-${i}-${j}`} className="ticker-item">
+                    {txt} <span className="ticker-sep" />
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+          {/* Strip B - purple reverse */}
+          <div className="ticker-strip strip-b">
+            <div className="ticker-inner">
+              {[...Array(4)].flatMap((_, i) =>
+                TICKER_B.map((txt, j) => (
+                  <span key={`b-${i}-${j}`} className="ticker-item">
+                    {txt} <span className="ticker-sep" />
+                  </span>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* ── HOW IT WORKS ── */}
+      <section id="how" className="how-section">
+        <div style={{ textAlign: 'center' }}>
+          <div className="sec-tag">⚙️ كيف يعمل</div>
+          <h2 className="sec-h">أربع خطوات بسيطة</h2>
+          <p className="sec-sub">من الصورة إلى تهنئة احترافية في دقائق</p>
+        </div>
+        <div className="how-grid">
+          {[
+            { num: '١', icon: '📸', title: 'ارفع صورتك', desc: 'ارفع صورة واضحة لك أو للشخص اللي تبي تهنّيه' },
+            { num: '٢', icon: '🎨', title: 'اختر الأستايل', desc: 'اختار من بين 6 أستايلات فاخرة مصممة بعناية' },
+            { num: '٣', icon: '✍️', title: 'أدخل الاسم', desc: 'اكتب اسم المُهنَّأ بالعربي أو الإنجليزي' },
+            { num: '٤', icon: '✨', title: 'ولّد التهنئة', desc: 'الذكاء الاصطناعي يصنع تهنئتك الفاخرة في ثوانٍ' },
+          ].map(step => (
+            <div key={step.num} className="how-card">
+              <div className="how-card-corner">{step.num}</div>
+              <div className="how-icon">{step.icon}</div>
+              <h3>{step.title}</h3>
+              <p>{step.desc}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── PRESETS ── */}
+      <section id="presets" className="presets-section">
+        <div style={{ textAlign: 'center' }}>
+          <div className="sec-tag">🎨 الأستايلات</div>
+          <h2 className="sec-h">اختر أستايلك المفضل</h2>
+          <p className="sec-sub">6 أستايلات فاخرة مصممة خصيصاً لعيد الفطر المبارك</p>
+        </div>
+        <div className="presets-grid">
+          {PRESETS.map(p => (
+            <div
+              key={p.id}
+              className={`preset-card${activePreset === p.id ? ' active' : ''}`}
+              onClick={() => setActivePreset(p.id)}
+            >
+              <img src={p.img} alt={p.name} />
+              <div className="preset-overlay" />
+              <div className="preset-badge">{p.icon}</div>
+              <div className="preset-check">✓</div>
+              <div className="preset-content">
+                <h4>{p.name}</h4>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FORM ── */}
+      {!generatedImage ? (
+        <section id="form" className="form-section">
+          <div style={{ textAlign: 'center' }}>
+            <div className="sec-tag">✦ ولّد تهنئتك</div>
+            <h2 className="sec-h">ابدأ الآن مجاناً</h2>
+            <p className="sec-sub">تجربتان مجانيتان · بدون بطاقة ائتمان</p>
+          </div>
+
+          <div className="form-card">
+            {/* Upload */}
+            {previewUrl ? (
+              <div className="upload-preview">
+                <img src={previewUrl} alt="preview" />
+                <button className="upload-preview-remove" onClick={handleImageClear}>✕</button>
+              </div>
+            ) : (
+              <div
+                className="upload-zone"
+                onClick={() => fileInputRef.current?.click()}
+                onDrop={handleDrop}
+                onDragOver={e => e.preventDefault()}
+              >
+                <span className="upload-zone-icon">📷</span>
+                <p>اسحب صورتك هنا أو انقر للرفع</p>
+                <p className="hint">PNG, JPG حتى 10 ميجا</p>
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={e => { const f = e.target.files?.[0]; if (f) handleImageSelect(f); }}
+                />
+              </div>
+            )}
+            {imageError && <p style={{ color: '#ef4444', fontSize: '.82rem', marginTop: '-.75rem', marginBottom: '1rem' }}>{imageError}</p>}
+
+            {/* Name */}
+            <label className="field-label">
+              اسم المُهنَّأ <span>*</span>
+            </label>
+            <input
+              className="field-input"
+              type="text"
+              placeholder="مثال: أحمد محمد"
+              value={name}
+              onChange={e => { setName(e.target.value); setNameError(''); }}
+              maxLength={40}
+            />
+            {nameError && <p style={{ color: '#ef4444', fontSize: '.82rem', marginTop: '.25rem' }}>{nameError}</p>}
+
+            {/* Preset chosen */}
+            <div style={{ marginTop: '1.25rem', padding: '.75rem 1rem', background: 'var(--blue-xxl)', borderRadius: 'var(--r-md)', display: 'flex', alignItems: 'center', gap: '.5rem', fontSize: '.88rem', color: 'var(--text-m)' }}>
+              <span>{PRESETS.find(p => p.id === activePreset)?.icon}</span>
+              <span>الأستايل المختار: <strong style={{ color: 'var(--blue)' }}>{PRESETS.find(p => p.id === activePreset)?.name}</strong></span>
+            </div>
+
+            {/* Attempts */}
+            {!stats.premiumUnlocked && (
+              <p style={{ textAlign: 'center', fontSize: '.82rem', color: 'var(--text-s)', marginTop: '1rem' }}>
+                متبقي لك {stats.remainingFreeAttempts} {stats.remainingFreeAttempts === 1 ? 'تجربة مجانية' : 'تجارب مجانية'}
+              </p>
+            )}
+
+            {/* Submit */}
+            <button className="btn-submit" onClick={handleGenerate} disabled={isGenerating}>
+              <span className="shimmer" />
+              {isGenerating ? '⏳ جارٍ التوليد...' : '✦ ولّد تهنئتي ✦'}
+            </button>
           </div>
         </section>
-
-        {/* Stats Section */}
-        <section className="py-32 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-7xl mx-auto">
-            <div className="glass-card rounded-[2.5rem] p-12 md:p-16 relative overflow-hidden">
-              {/* Gradient Glow */}
-              <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-pink-500/10 to-blue-500/10" />
-              
-              <div className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-12">
-                {[
-                  { value: '10K+', label: 'Greetings Created' },
-                  { value: '98%', label: 'Satisfaction Rate' },
-                  { value: '24/7', label: 'AI Processing' },
-                ].map((stat, index) => (
-                  <motion.div
-                    key={index}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: index * 0.2, duration: 0.8 }}
-                    className="text-center"
-                  >
-                    <div className="text-6xl md:text-7xl font-bold animated-gradient-text mb-4">
-                      {stat.value}
-                    </div>
-                    <div className="text-xl text-white/60 font-medium">{stat.label}</div>
-                  </motion.div>
-                ))}
-              </div>
+      ) : (
+        /* ── RESULT ── */
+        <section className="result-section">
+          <div style={{ textAlign: 'center' }}>
+            <div className="sec-tag">🎉 تهنئتك جاهزة!</div>
+            <h2 className="sec-h">عيد مبارك يا {name}!</h2>
+          </div>
+          <div className="result-card">
+            <img src={generatedImage} alt="Eid Greeting" className="result-img" />
+            <div className="result-actions">
+              <button className="btn-dl" onClick={handleDownload}>⬇️ تحميل</button>
+              <button className="btn-share" onClick={handleShare}>↗️ مشاركة</button>
+              <button className="btn-retry" onClick={handleRetry}>↺ تهنئة جديدة</button>
             </div>
           </div>
         </section>
+      )}
 
-        {/* CTA Section */}
-        <section className="py-32 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-5xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-            >
-              <div className="glass-card rounded-[2.5rem] p-12 md:p-16 text-center relative overflow-hidden">
-                {/* Gradient Background */}
-                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-pink-500/20 to-blue-500/20" />
-                
-                <div className="relative z-10">
-                  <motion.div
-                    animate={{
-                      rotate: 360,
-                    }}
-                    transition={{
-                      duration: 20,
-                      repeat: Infinity,
-                      ease: 'linear',
-                    }}
-                    className="inline-flex items-center justify-center w-24 h-24 bg-gradient-to-br from-purple-500 via-pink-500 to-blue-500 rounded-3xl mb-10 shadow-2xl shadow-purple-500/40"
-                  >
-                    <SparklesIcon className="w-12 h-12 text-white" />
-                  </motion.div>
+      {/* ── NUMBERS ── */}
+      <section id="numbers" className="numbers-section">
+        <div style={{ textAlign: 'center', position: 'relative' }}>
+          <div className="sec-tag">📊 أرقامنا</div>
+          <h2 className="sec-h">أرقام تتحدث عن نفسها</h2>
+        </div>
+        <div className="numbers-grid">
+          {[
+            { val: '+500', label: 'تهنئة تم توليدها' },
+            { val: '48h',  label: 'أقصى وقت للتسليم' },
+            { val: '%97',  label: 'معدل الرضا' },
+            { val: '+50',  label: 'علامة تجارية' },
+          ].map(n => (
+            <div key={n.val} className="number-card">
+              <span className="number-val">{n.val}</span>
+              <span className="number-label">{n.label}</span>
+            </div>
+          ))}
+        </div>
+      </section>
 
-                  <h2 className="text-5xl md:text-6xl font-bold mb-6">
-                    Ready to Create Your{' '}
-                    <span className="gradient-text">Perfect Greeting?</span>
-                  </h2>
-                  <p className="text-xl text-white/70 mb-10 max-w-2xl mx-auto leading-relaxed">
-                    Join thousands of users who have already created beautiful Eid greetings. Start for free today!
-                  </p>
-                  <motion.button
-                    whileHover={{ scale: 1.05, y: -3 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={() => document.getElementById('generator')?.scrollIntoView({ behavior: 'smooth' })}
-                    className="relative px-10 py-5 bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 rounded-2xl font-bold text-white text-xl shadow-2xl shadow-purple-500/30 overflow-hidden group mx-auto block"
-                  >
-                    <span className="relative z-10 flex items-center gap-3">
-                      Start Creating Now
-                      <Rocket className="w-6 h-6" />
-                    </span>
-                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
-                  </motion.button>
-                </div>
-              </div>
-            </motion.div>
+      {/* ── FOOTER ── */}
+      <footer style={{ background: 'var(--text)', color: 'rgba(255,255,255,.7)', padding: '3rem 2rem', textAlign: 'center' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', marginBottom: '.5rem' }}>⚡ برق ستديو</div>
+          <p style={{ fontSize: '.85rem', marginBottom: '1.5rem' }}>تهنئة عيد فاخرة بالذكاء الاصطناعي</p>
+          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap', fontSize: '.85rem', marginBottom: '2rem' }}>
+            <a href="#how"     style={{ color: 'rgba(255,255,255,.6)', textDecoration: 'none' }}>كيف يعمل</a>
+            <a href="#presets" style={{ color: 'rgba(255,255,255,.6)', textDecoration: 'none' }}>الأستايلات</a>
+            <a href="#numbers" style={{ color: 'rgba(255,255,255,.6)', textDecoration: 'none' }}>أرقامنا</a>
+            <a href="#form"    style={{ color: 'rgba(255,255,255,.6)', textDecoration: 'none' }}>ابدأ الآن</a>
           </div>
-        </section>
-      </div>
+          <div style={{ borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: '1.5rem', fontSize: '.78rem' }}>
+            © {new Date().getFullYear()} برق ستديو · جميع الحقوق محفوظة
+          </div>
+        </div>
+      </footer>
 
       {/* Payment Modal */}
-      <PaymentModal
-        isOpen={showPaymentModal}
-        onClose={() => setShowPaymentModal(false)}
-        onSelectPlan={handleSelectPlan}
-      />
-    </main>
+      {showPayment && (
+        <PaymentModal
+          isOpen={showPayment}
+          onClose={() => setShowPayment(false)}
+          onSelectPlan={handleSelectPlan}
+        />
+      )}
+
+      {/* Loading Overlay */}
+      {isGenerating && (
+        <div className="loading-overlay">
+          <div className="loader-orb-wrap">
+            <div className="loader-ring" />
+            <div className="loader-ring loader-ring-2" />
+            <span className="loader-emoji">🌙</span>
+          </div>
+          <p style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text)', margin: 0 }}>
+            جارٍ توليد تهنئتك...
+          </p>
+          <p style={{ fontSize: '.88rem', color: 'var(--text-m)', margin: 0 }}>
+            الذكاء الاصطناعي يعمل بكل قوته ✨
+          </p>
+          <div className="loader-progress-wrap">
+            <div className="loader-bar" />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
