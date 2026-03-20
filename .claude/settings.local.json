@@ -21,7 +21,14 @@
       "Bash(vercel alias:*)",
       "Bash(vercel domains:*)",
       "Bash(vercel logs:*)",
-      "Bash(vercel inspect:*)"
+      "Bash(vercel inspect:*)",
+      "Bash(xargs grep:*)",
+      "Bash(taskkill /PID 78208 /F)",
+      "Bash(cmd /c \"taskkill /IM node.exe /F\")",
+      "Bash(Remove-Item -Force \"c:\\\\Users\\\\abdel\\\\Desktop\\\\barq\\\\.next\\\\dev\\\\logs\\\\next-development.log\" -ErrorAction SilentlyContinue)",
+      "Bash(cmd /c \"tasklist | findstr 78208\")",
+      "Bash(find c:/Users/abdel/Desktop/barq/.next -name *.log)",
+      "Bash(find c:/Users/abdel/Desktop/barq/.next -name *.json)"
     ]
   }
 }
