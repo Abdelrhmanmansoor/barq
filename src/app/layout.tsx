@@ -5,10 +5,6 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "برق ستديو - مولّد تهنئة العيد بالذكاء الاصطناعي",
   description: "صنع تهنئة عيد فاخرة بالذكاء الاصطناعي في ثوانٍ",
-  icons: {
-    icon: '/Barq-Logo1.png',
-    apple: '/Barq-Logo1.png',
-  },
 };
 
 export default function RootLayout({
