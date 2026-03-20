@@ -1,6 +1,6 @@
 import { Resend } from 'resend';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = () => new Resend(process.env.RESEND_API_KEY || 're_placeholder');
 
 interface EmailParams {
   to: string;
@@ -49,7 +49,7 @@ export const emailService = {
         </html>
       `;
 
-      await resend.emails.send({
+      await getResend().emails.send({
         from: process.env.RESEND_FROM_EMAIL || 'noreply@barq-studio.com',
         to: email,
         subject: 'Welcome to Barq! ✨',
@@ -108,7 +108,7 @@ export const emailService = {
         </html>
       `;
 
-      await resend.emails.send({
+      await getResend().emails.send({
         from: process.env.RESEND_FROM_EMAIL || 'noreply@barq-studio.com',
         to: email,
         subject: 'Your Eid Greeting is Ready! 🎉',
@@ -165,7 +165,7 @@ export const emailService = {
         </html>
       `;
 
-      await resend.emails.send({
+      await getResend().emails.send({
         from: process.env.RESEND_FROM_EMAIL || 'noreply@barq-studio.com',
         to: email,
         subject: 'Payment Confirmation - Barq Premium 💳',
@@ -217,7 +217,7 @@ export const emailService = {
         </html>
       `;
 
-      await resend.emails.send({
+      await getResend().emails.send({
         from: process.env.RESEND_FROM_EMAIL || 'noreply@barq-studio.com',
         to: process.env.ADMIN_EMAIL || 'admin@barq-studio.com',
         subject: `New Payment: ${plan} - ${amount} KWD`,
