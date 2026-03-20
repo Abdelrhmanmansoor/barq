@@ -44,28 +44,35 @@ class ImageGeneratorClient {
         const blob = new Blob([buffer], { type: params.imageType ?? 'image/jpeg' });
         hostedUrl = await fal.storage.upload(blob);
       }
+      console.log('[fal.ai] hostedUrl:', hostedUrl);
 
-      // Step 2: call the model with image_urls (array of strings, as per API docs)
+      // Step 2: call the model — minimal required fields only
+      const falInput = {
+        prompt:       params.prompt,
+        image_urls:   [hostedUrl],
+        aspect_ratio: '3:4',
+        num_images:   1,
+      };
+      console.log('[fal.ai] input:', JSON.stringify({ ...falInput, prompt: falInput.prompt.slice(0, 80) + '...' }));
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await fal.subscribe(FAL_MODEL as any, {
-        input: {
-          prompt:        params.prompt,
-          image_urls:    [hostedUrl],
-          aspect_ratio:  '3:4',
-          num_images:    1,
-          output_format: 'jpeg',
-          resolution:    '1K',
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } as any,
-      }) as { data?: { images?: { url: string }[] }; requestId?: string };
+      const result = await fal.subscribe(FAL_MODEL as any, { input: falInput as any }) as {
+        data?: { images?: { url: string }[] }; requestId?: string;
+      };
 
       const imageUrl = result?.data?.images?.[0]?.url;
       if (!imageUrl) throw new Error('No image returned from fal.ai');
 
       return { success: true, imageUrl, requestId: result.requestId };
 
-    } catch (error) {
-      const msg = error instanceof Error ? error.message : 'Unknown error';
+    } catch (error: unknown) {
+      let msg = 'Unknown error';
+      if (error instanceof Error) {
+        msg = error.message;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const body = (error as any).body ?? (error as any).response;
+        if (body) console.error('[fal.ai] error body:', JSON.stringify(body));
+      }
       console.error('[fal.ai error]', msg);
       return { success: false, error: msg };
     }
