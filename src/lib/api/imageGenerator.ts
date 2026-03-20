@@ -1,10 +1,8 @@
 import { fal } from '@fal-ai/client';
+import type { NanoBananaProEditInput } from '@fal-ai/client';
 
-// ─── Model ID ────────────────────────────────────────────────────────────────
-// Nano Banana 2 = Google Gemini 2.5 Flash Image Edit (fal.ai codename)
-// Takes uploaded image + text prompt → edits/transforms while preserving identity
-// $0.08/image | https://fal.ai/models/fal-ai/nano-banana-2/edit
-const FAL_MODEL = 'fal-ai/nano-banana-2/edit';
+// fal-ai/nano-banana-pro/edit — Gemini Flash image editing, supports resolution param
+const FAL_MODEL = 'fal-ai/nano-banana-pro/edit';
 
 fal.config({ credentials: process.env.FAL_KEY });
 
@@ -44,19 +42,17 @@ class ImageGeneratorClient {
         const blob = new Blob([buffer], { type: params.imageType ?? 'image/jpeg' });
         hostedUrl = await fal.storage.upload(blob);
       }
-      console.log('[fal.ai] hostedUrl:', hostedUrl);
-
-      // Step 2: call the model — minimal required fields only
-      const falInput = {
-        prompt:       params.prompt,
-        image_urls:   [hostedUrl],
-        aspect_ratio: '3:4',
-        num_images:   1,
+      // Step 2: call the model with correct typed input
+      const falInput: NanoBananaProEditInput = {
+        prompt:        params.prompt,
+        image_urls:    [hostedUrl],
+        aspect_ratio:  '3:4',
+        num_images:    1,
+        output_format: 'jpeg',
+        resolution:    '1K',
       };
-      console.log('[fal.ai] input:', JSON.stringify({ ...falInput, prompt: falInput.prompt.slice(0, 80) + '...' }));
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await fal.subscribe(FAL_MODEL as any, { input: falInput as any }) as {
+      const result = await fal.subscribe(FAL_MODEL, { input: falInput }) as {
         data?: { images?: { url: string }[] }; requestId?: string;
       };
 
@@ -65,14 +61,8 @@ class ImageGeneratorClient {
 
       return { success: true, imageUrl, requestId: result.requestId };
 
-    } catch (error: unknown) {
-      let msg = 'Unknown error';
-      if (error instanceof Error) {
-        msg = error.message;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const body = (error as any).body ?? (error as any).response;
-        if (body) console.error('[fal.ai] error body:', JSON.stringify(body));
-      }
+    } catch (error) {
+      const msg = error instanceof Error ? error.message : 'Unknown error';
       console.error('[fal.ai error]', msg);
       return { success: false, error: msg };
     }
