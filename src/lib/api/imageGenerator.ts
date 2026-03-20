@@ -51,7 +51,7 @@ class ImageGeneratorClient {
         resolution:    '1K',
       };
 
-      const result = await fal.subscribe(FAL_MODEL, { input: falInput }) as {
+      const result = await fal.subscribe(FAL_MODEL, { input: falInput as never }) as {
         data?: { images?: { url: string }[] }; requestId?: string;
       };
 
