@@ -3,13 +3,16 @@ import { fal } from '@fal-ai/client';
 // fal-ai/nano-banana-2/edit — Gemini 3.1 Flash image editing, $0.08/image
 const FAL_MODEL = 'fal-ai/nano-banana-2/edit';
 
-fal.config({ credentials: process.env.FAL_KEY });
+// Only configure credentials if the key is actually available at runtime
+// DO NOT call fal.config({ credentials: undefined }) — it clears auto-detection
+if (process.env.FAL_KEY) {
+  fal.config({ credentials: process.env.FAL_KEY });
+}
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
 export interface GenerateImageParams {
   prompt: string;
-  negative_prompt?: string;
   image?: string;        // base64 string (no data: prefix) — the uploaded face photo
   imageType?: string;    // MIME type of the uploaded image (e.g. 'image/jpeg')
   imageUrl?: string;     // OR a hosted URL if already available
@@ -27,49 +30,113 @@ export interface GenerateImageResponse {
 class ImageGeneratorClient {
 
   async generateImage(params: GenerateImageParams): Promise<GenerateImageResponse> {
-    try {
-      if (!params.image && !params.imageUrl) {
-        return { success: false, error: 'No image provided.' };
-      }
+    const key = process.env.FAL_KEY;
+    if (!key) {
+      console.error('[fal.ai] FAL_KEY is not set in runtime environment');
+      return { success: false, error: 'FAL_KEY not configured on server' };
+    }
 
-      // Step 1: upload image to fal.ai storage → get a real https:// URL
-      let hostedUrl: string;
+    if (!params.image && !params.imageUrl) {
+      return { success: false, error: 'No image provided.' };
+    }
+
+    // ── Step 1: upload image to fal.ai storage → real https:// URL ──
+    let hostedUrl: string;
+    try {
       if (params.imageUrl && params.imageUrl.startsWith('http')) {
         hostedUrl = params.imageUrl;
       } else {
         const buffer = Buffer.from(params.image!, 'base64');
         const blob = new Blob([buffer], { type: params.imageType ?? 'image/jpeg' });
         hostedUrl = await fal.storage.upload(blob);
+        console.log('[fal.ai] uploaded image:', hostedUrl);
       }
-      // Step 2: call the model with correct typed input
-      const falInput = {
-        prompt:        params.prompt,
-        image_urls:    [hostedUrl],
-        aspect_ratio:  '3:4',
-        num_images:    1,
-        output_format: 'jpeg',
-        resolution:    '1K',
-      };
+    } catch (uploadErr) {
+      const msg = uploadErr instanceof Error ? uploadErr.message : String(uploadErr);
+      console.error('[fal.ai] storage upload failed:', msg);
+      // Fallback: try REST API directly with base64 data URL
+      return this.generateViaRest(params, key);
+    }
 
-      const result = await fal.subscribe(FAL_MODEL, { input: falInput as never }) as {
-        data?: { images?: { url: string }[] }; requestId?: string;
-      };
+    // ── Step 2: call model via SDK ──
+    try {
+      const result = await fal.subscribe(FAL_MODEL, {
+        input: {
+          prompt:        params.prompt,
+          image_urls:    [hostedUrl],
+          aspect_ratio:  '3:4' as const,
+          num_images:    1,
+          output_format: 'jpeg' as const,
+          resolution:    '1K' as const,
+        } as never,
+      }) as { data?: { images?: { url: string }[] }; requestId?: string };
 
       const imageUrl = result?.data?.images?.[0]?.url;
       if (!imageUrl) throw new Error('No image returned from fal.ai');
 
       return { success: true, imageUrl, requestId: result.requestId };
 
-    } catch (error) {
-      let msg = 'Unknown error';
-      if (error instanceof Error) {
-        msg = error.message;
-        // Log full error body from fal.ai if available
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const extra = (error as any).body ?? (error as any).response ?? (error as any).cause;
-        if (extra) console.error('[fal.ai] full error:', JSON.stringify(extra));
+    } catch (err) {
+      const msg = err instanceof Error ? err.message : String(err);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const body = (err as any).body ?? (err as any).response ?? (err as any).cause;
+      if (body) console.error('[fal.ai] SDK error body:', JSON.stringify(body));
+      console.error('[fal.ai] SDK error:', msg);
+
+      // Fallback: try REST API directly
+      return this.generateViaRest(params, key);
+    }
+  }
+
+  // ── Direct REST fallback (bypasses SDK entirely) ──
+  private async generateViaRest(
+    params: GenerateImageParams,
+    key: string,
+  ): Promise<GenerateImageResponse> {
+    console.log('[fal.ai] trying direct REST fallback...');
+    try {
+      // Build image_urls: try data URL directly if we have base64
+      const imageUrls: string[] = [];
+      if (params.imageUrl && params.imageUrl.startsWith('http')) {
+        imageUrls.push(params.imageUrl);
+      } else if (params.image) {
+        const mime = params.imageType ?? 'image/jpeg';
+        imageUrls.push(`data:${mime};base64,${params.image}`);
       }
-      console.error('[fal.ai error]', msg);
+
+      const res = await fetch(`https://fal.run/${FAL_MODEL}`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Key ${key}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          prompt:        params.prompt,
+          image_urls:    imageUrls,
+          aspect_ratio:  '3:4',
+          num_images:    1,
+          output_format: 'jpeg',
+          resolution:    '1K',
+        }),
+      });
+
+      const json = await res.json() as { images?: { url: string }[]; request_id?: string; detail?: string };
+
+      if (!res.ok) {
+        const detail = json.detail ?? `HTTP ${res.status}`;
+        console.error('[fal.ai] REST error:', detail);
+        return { success: false, error: detail };
+      }
+
+      const imageUrl = json.images?.[0]?.url;
+      if (!imageUrl) throw new Error('No image in REST response');
+
+      console.log('[fal.ai] REST success:', imageUrl);
+      return { success: true, imageUrl, requestId: json.request_id };
+
+    } catch (restErr) {
+      const msg = restErr instanceof Error ? restErr.message : String(restErr);
+      console.error('[fal.ai] REST fallback failed:', msg);
       return { success: false, error: msg };
     }
   }

@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
 
     // Get the selected preset and inject all variables
     // Note: uploadedImageUrl is a placeholder — the actual image is passed via image param
-    const { prompt, negativePrompt } = getEidPromptPreset(Number(presetId), {
+    const { prompt } = getEidPromptPreset(Number(presetId), {
       uploadedImageUrl: '[uploaded face photo]',
       recipientName:  name,
       greetingLine1,
@@ -35,9 +35,9 @@ export async function POST(request: NextRequest) {
     });
 
     // Send to fal.ai — pass the raw base64 so imageGenerator uploads it to fal.ai storage
+    console.log('[/api/generate] FAL_KEY present:', !!process.env.FAL_KEY);
     const result = await imageGenerator.generateImage({
       prompt,
-      negative_prompt: negativePrompt,
       image: imageData,
       imageType,
     });
