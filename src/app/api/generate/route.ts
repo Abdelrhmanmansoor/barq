@@ -1,18 +1,22 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { imageGenerator } from '@/lib/api/imageGenerator';
-import { generatePromptParams } from '@/lib/ai/promptBuilder';
-import { emailService } from '@/lib/email/resend';
+import { getEidPromptPreset } from '@/lib/ai/eidPromptPresets';
 
 /**
- * API Route for AI Image Generation
  * POST /api/generate
+ * Body: { name, imageData, presetId?, greetingLine1?, greetingLine2?, email? }
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, imageData, language = 'ar', preset = 1, email, sendEmail = false } = body;
+    const {
+      name,
+      imageData,           // base64 string of the uploaded face photo
+      presetId = 1,        // which of the 7 presets to use (1–7)
+      greetingLine1,
+      greetingLine2,
+    } = body;
 
-    // Validate input
     if (!name || !imageData) {
       return NextResponse.json(
         { success: false, error: 'Name and image are required' },
@@ -20,29 +24,23 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Map preset ID → style
-    const styleMap: Record<number, 'cinematic' | 'artistic' | 'minimalist' | 'elegant'> = {
-      1: 'cinematic',
-      2: 'elegant',
-      3: 'minimalist',
-      4: 'cinematic',
-      5: 'artistic',
-      6: 'elegant',
-    };
-    const style = styleMap[preset] ?? 'cinematic';
+    // Build the image data URL so it can be referenced in the prompt template
+    const uploadedImageUrl = `data:image/jpeg;base64,${imageData}`;
 
-    // Generate prompt parameters
-    const promptParams = generatePromptParams({
-      name,
-      language,
-      style,
-      includePatterns: true,
+    // Get the selected preset and inject all variables
+    const { prompt, negativePrompt } = getEidPromptPreset(Number(presetId), {
+      uploadedImageUrl,
+      recipientName:  name,
+      greetingLine1,
+      greetingLine2,
     });
 
-    // Call AI image generation API
+    // Send to fal.ai — uploaded image is both the identity reference
+    // AND the image_url parameter passed to FLUX Kontext
     const result = await imageGenerator.generateImage({
-      ...promptParams,
-      image: imageData, // Base64 encoded image
+      prompt,
+      negative_prompt: negativePrompt,
+      imageUrl: uploadedImageUrl,
     });
 
     if (!result.success) {
@@ -52,25 +50,14 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send email notification if requested and email is provided
-    if (sendEmail && email && result.imageUrl) {
-      try {
-        await emailService.sendImageGeneratedEmail(email, name, result.imageUrl);
-      } catch (emailError) {
-        console.error('Failed to send email:', emailError);
-        // Don't fail the request if email fails
-      }
-    }
-
-    // Return success response
     return NextResponse.json({
-      success: true,
-      imageUrl: result.imageUrl,
+      success:   true,
+      imageUrl:  result.imageUrl,
       requestId: result.requestId,
     });
 
   } catch (error) {
-    console.error('Generate API error:', error);
+    console.error('[/api/generate]', error);
     return NextResponse.json(
       { success: false, error: 'Internal server error' },
       { status: 500 }

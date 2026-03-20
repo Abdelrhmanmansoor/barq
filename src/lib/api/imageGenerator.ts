@@ -1,12 +1,20 @@
 import { fal } from '@fal-ai/client';
 
+// ─── Model ID ────────────────────────────────────────────────────────────────
+// fal.ai model for face-identity-preserving portrait generation.
+// FLUX Kontext: takes an input image + text prompt, preserves the person's
+// identity while transforming the scene/style — ideal for Eid greeting cards.
+const FAL_MODEL = 'fal-ai/flux-pro/v1/kontext';
+
+fal.config({ credentials: process.env.FAL_KEY });
+
+// ─── Types ───────────────────────────────────────────────────────────────────
+
 export interface GenerateImageParams {
   prompt: string;
-  negative_prompt: string;
-  image?: string; // Base64 encoded image (without data: prefix)
-  width?: number;
-  height?: number;
-  style?: string;
+  negative_prompt?: string;
+  image?: string;        // base64 string (no data: prefix) — the uploaded face photo
+  imageUrl?: string;     // OR a hosted URL if already available
 }
 
 export interface GenerateImageResponse {
@@ -16,36 +24,36 @@ export interface GenerateImageResponse {
   requestId?: string;
 }
 
-fal.config({ credentials: process.env.FAL_KEY });
+// ─── Client ──────────────────────────────────────────────────────────────────
 
 class ImageGeneratorClient {
 
   async generateImage(params: GenerateImageParams): Promise<GenerateImageResponse> {
     try {
-      const imageDataUrl = params.image
-        ? `data:image/jpeg;base64,${params.image}`
-        : undefined;
+      // Build the image reference: prefer imageUrl, fall back to base64
+      const imageDataUrl = params.imageUrl
+        ? params.imageUrl
+        : params.image
+          ? `data:image/jpeg;base64,${params.image}`
+          : null;
 
-      // Use image-to-image if a reference photo is provided, else text-to-image
-      const modelId = imageDataUrl
-        ? 'fal-ai/flux/dev/image-to-image'
-        : 'fal-ai/flux/dev';
-
-      const input: Record<string, unknown> = {
-        prompt: params.prompt,
-        num_inference_steps: 28,
-        guidance_scale: 3.5,
-        num_images: 1,
-        output_format: 'jpeg',
-      };
-
-      if (imageDataUrl) {
-        input.image_url = imageDataUrl;
-        input.strength = 0.82; // how much to change the original face
+      if (!imageDataUrl) {
+        return { success: false, error: 'No image provided — an uploaded photo is required.' };
       }
 
+      // FLUX Kontext input shape
+      const input = {
+        prompt:               params.prompt,
+        image_url:            imageDataUrl,   // the uploaded face photo (identity reference)
+        guidance_scale:       3.5,
+        num_inference_steps:  28,
+        num_images:           1,
+        output_format:        'jpeg',
+        // image_size can be set here if needed e.g. { width: 768, height: 1024 }
+      };
+
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const result = await fal.subscribe(modelId as any, { input: input as any }) as {
+      const result = await fal.subscribe(FAL_MODEL as any, { input: input as any }) as {
         data?: { images?: { url: string }[] };
         requestId?: string;
       };
@@ -62,14 +70,11 @@ class ImageGeneratorClient {
     }
   }
 
-  async fileToBase64(file: File): Promise<string> {
+  fileToBase64(file: File): Promise<string> {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
-      reader.onload = () => {
-        const base64String = reader.result as string;
-        resolve(base64String.split(',')[1]);
-      };
+      reader.onload = () => resolve((reader.result as string).split(',')[1]);
       reader.onerror = reject;
     });
   }
