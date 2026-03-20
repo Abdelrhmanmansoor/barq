@@ -1,10 +1,10 @@
 import { fal } from '@fal-ai/client';
 
 // ─── Model ID ────────────────────────────────────────────────────────────────
-// fal.ai model for face-identity-preserving portrait generation.
-// FLUX Kontext: takes an input image + text prompt, preserves the person's
-// identity while transforming the scene/style — ideal for Eid greeting cards.
-const FAL_MODEL = 'fal-ai/flux-pro/v1/kontext';
+// Nano Banana 2 = Google Gemini 2.5 Flash Image Edit (fal.ai codename)
+// Takes uploaded image + text prompt → edits/transforms while preserving identity
+// $0.08/image | https://fal.ai/models/fal-ai/nano-banana-2/edit
+const FAL_MODEL = 'fal-ai/nano-banana-2/edit';
 
 fal.config({ credentials: process.env.FAL_KEY });
 
@@ -41,15 +41,14 @@ class ImageGeneratorClient {
         return { success: false, error: 'No image provided — an uploaded photo is required.' };
       }
 
-      // FLUX Kontext input shape
+      // nano-banana-2/edit (Google Gemini 2.5 Flash) input shape
       const input = {
-        prompt:               params.prompt,
-        image_url:            imageDataUrl,   // the uploaded face photo (identity reference)
-        guidance_scale:       3.5,
-        num_inference_steps:  28,
-        num_images:           1,
-        output_format:        'jpeg',
-        // image_size can be set here if needed e.g. { width: 768, height: 1024 }
+        prompt:        params.prompt,
+        image_urls:    [imageDataUrl],  // array — the uploaded face photo (identity reference)
+        aspect_ratio:  '3:4',           // portrait format for Eid greeting cards
+        num_images:    1,
+        output_format: 'jpeg',
+        resolution:    '1K',
       };
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
