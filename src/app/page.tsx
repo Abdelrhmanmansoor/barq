@@ -102,7 +102,22 @@ export default function Home() {
     if (!name.trim()) { setNameError('الرجاء إدخال الاسم'); valid = false; } else setNameError('');
     if (!selectedImage) { setImageError('الرجاء رفع صورة'); valid = false; } else setImageError('');
     if (!valid) return;
-    if (stats.remainingFreeAttempts <= 0 && !stats.premiumUnlocked) { setShowPayment(true); return; }
+    if (stats.remainingFreeAttempts <= 0 && !stats.premiumUnlocked) {
+      toast('⏳ الخدمة عليها ضغط هالفترة — حاول مرة ثانية بعد شوي، ما راح يطول! 🙏', {
+        duration: 5000,
+        style: {
+          background: '#1a1d2e',
+          color: '#e2e8ff',
+          border: '1px solid rgba(99,120,250,.35)',
+          borderRadius: '14px',
+          fontSize: '.92rem',
+          fontFamily: 'Tajawal, sans-serif',
+          padding: '14px 18px',
+          direction: 'rtl',
+        },
+      });
+      return;
+    }
 
     setGenerating(true); setError(null);
     try {
