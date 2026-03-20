@@ -409,7 +409,7 @@ export default function Home() {
                   id="main-image-upload"
                   type="file"
                   accept="image/*"
-                  style={{ position: 'absolute', opacity: 0, width: 0, height: 0, overflow: 'hidden' }}
+                  style={{ position: 'absolute', opacity: 0, width: '1px', height: '1px', pointerEvents: 'none' }}
                   onChange={e => { const f = e.target.files?.[0]; if (f) handleImageSelect(f); }}
                 />
               </label>
@@ -544,7 +544,7 @@ export default function Home() {
             <div className="loader-ring loader-ring-2" />
             <Wand2 size={32} strokeWidth={1.5} color="var(--blue)" />
           </div>
-          <p style={{ fontWeight: 800, fontSize: '1.1rem', color: 'var(--text)', margin: 0 }}>جارٍ توليد تهنئتك...</p>
+          <p style={{ fontWeight: 800, fontSize: '1.1rem', color: '#fff', margin: 0 }}>جارٍ توليد تهنئتك...</p>
           <p key={loadingMsgIdx} style={{ fontSize: '1rem', color: '#fff', margin: 0, opacity: 0.9, animation: 'fadeMsg .4s ease' }}>
             {LOADING_MSGS[loadingMsgIdx]}
           </p>
