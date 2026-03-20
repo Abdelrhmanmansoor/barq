@@ -1,0 +1,1902 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تهنئة العيد بالذكاء الاصطناعي</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#3D6BF8;
+  --blue-d:#2952e3;
+  --blue-l:#6B8FF9;
+  --blue-xl:#EEF2FF;
+  --blue-xxl:#F5F7FF;
+  --accent:#6D28D9;
+  --accent-l:#8B5CF6;
+  --accent-xl:#EDE9FE;
+  --accent-g:linear-gradient(135deg,#6D28D9,#8B5CF6,#6D28D9);
+  --bg:#ffffff;
+  --bg-soft:#F8FAFF;
+  --text:#0f172a;
+  --text-m:#475569;
+  --text-s:#94a3b8;
+  --border:#E2E8F0;
+  --card:#ffffff;
+  --r-sm:10px;
+  --r-md:16px;
+  --r-lg:24px;
+  --r-xl:32px;
+  --r-full:999px;
+}
+html{font-family:'Tajawal',sans-serif;direction:rtl;scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);overflow-x:hidden;font-family:'Tajawal',sans-serif}
+a{text-decoration:none;color:inherit}
+button,input,textarea,select{font-family:'Tajawal',sans-serif}
+img{max-width:100%;display:block}
+::selection{background:var(--blue);color:#fff}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:#f1f5f9}
+::-webkit-scrollbar-thumb{background:var(--blue-l);border-radius:var(--r-full)}
+
+.wrap{max-width:1200px;margin:0 auto;padding:0 2rem}
+
+/* ══════════════════════════════
+   NAVBAR
+══════════════════════════════ */
+#navbar{
+  position:fixed;top:0;right:0;left:0;z-index:1000;
+  background:rgba(255,255,255,.85);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:all .3s;
+}
+.nav-inner{
+  display:flex;align-items:center;justify-content:space-between;
+  max-width:1200px;margin:0 auto;padding:.9rem 2rem;
+}
+.nav-logo{
+  font-size:1.15rem;font-weight:800;color:var(--blue);
+  display:flex;align-items:center;gap:.4rem;
+}
+.nav-logo span{color:var(--text)}
+.nav-links{display:flex;align-items:center;gap:2rem;list-style:none}
+.nav-links a{
+  font-size:.9rem;font-weight:500;color:var(--text-m);
+  transition:color .2s;
+}
+.nav-links a:hover{color:var(--blue)}
+.nav-right{display:flex;align-items:center;gap:.8rem}
+.nav-api{
+  background:var(--blue-xl);border:1px solid rgba(61,107,248,.2);
+  color:var(--text);padding:.45rem .9rem;font-size:.82rem;
+  border-radius:var(--r-full);outline:none;width:200px;
+  transition:border-color .2s,box-shadow .2s;
+}
+.nav-api:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(61,107,248,.12)}
+.nav-api::placeholder{color:var(--text-s)}
+.nav-cta{
+  background:var(--blue);color:#fff;
+  font-size:.88rem;font-weight:700;padding:.48rem 1.3rem;
+  border:none;border-radius:var(--r-full);cursor:pointer;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  box-shadow:0 4px 14px rgba(61,107,248,.3);
+}
+.nav-cta:hover{background:var(--blue-d);transform:translateY(-1px);box-shadow:0 6px 18px rgba(61,107,248,.4)}
+
+/* ══════════════════════════════
+   HERO
+══════════════════════════════ */
+#hero{
+  min-height:100vh;position:relative;overflow:hidden;
+  display:flex;align-items:center;
+  background:var(--bg);
+  padding-top:70px;
+}
+/* Big orb like Ticketly */
+.hero-orb{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-55%);
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle at 45% 40%,rgba(61,107,248,.14) 0%,rgba(61,107,248,.05) 45%,transparent 70%);
+  pointer-events:none;z-index:0;
+  animation:orbFloat 8s ease-in-out infinite;
+}
+.hero-orb-2{
+  position:absolute;bottom:-15%;right:-10%;
+  width:400px;height:400px;border-radius:50%;
+  background:radial-gradient(circle,rgba(109,40,217,.08) 0%,transparent 70%);
+  pointer-events:none;z-index:0;
+  animation:orbFloat 12s ease-in-out infinite reverse;
+}
+@keyframes orbFloat{0%,100%{transform:translate(-50%,-55%) scale(1)}50%{transform:translate(-50%,-58%) scale(1.04)}}
+canvas#hero-canvas{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5}
+.hero-wrap{
+  position:relative;z-index:2;
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:4rem;
+  max-width:1200px;margin:0 auto;padding:5rem 2rem 4rem;width:100%;
+}
+.hero-text{}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:.5rem;
+  background:var(--blue-xl);color:var(--blue);
+  border:1px solid rgba(61,107,248,.2);
+  padding:.35rem 1rem;border-radius:var(--r-full);
+  font-size:.78rem;font-weight:700;letter-spacing:.5px;
+  margin-bottom:1.8rem;
+}
+.hero-badge::before{content:'✦';font-size:.65rem}
+.hero-h1{
+  font-size:clamp(2.2rem,4.5vw,3.6rem);font-weight:800;
+  line-height:1.18;color:var(--text);margin-bottom:1.4rem;
+}
+.hero-h1 .blue{color:var(--blue)}
+.hero-h1 .gold{color:var(--accent)}
+.hero-sub{
+  font-size:1.05rem;color:var(--text-m);line-height:1.85;
+  margin-bottom:2.5rem;max-width:460px;font-weight:400;
+}
+.hero-btns{display:flex;align-items:center;gap:1rem;flex-wrap:wrap;margin-bottom:3rem}
+.btn-primary{
+  background:var(--blue);color:#fff;font-size:.95rem;font-weight:700;
+  padding:.8rem 2.2rem;border:none;border-radius:var(--r-full);cursor:pointer;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  box-shadow:0 6px 20px rgba(61,107,248,.35);
+}
+.btn-primary:hover{background:var(--blue-d);transform:translateY(-2px);box-shadow:0 8px 24px rgba(61,107,248,.45)}
+.btn-secondary{
+  background:#fff;color:var(--text);font-size:.92rem;font-weight:600;
+  padding:.8rem 2rem;border:1.5px solid var(--border);border-radius:var(--r-full);cursor:pointer;
+  transition:all .2s;box-shadow:0 2px 8px rgba(0,0,0,.05);
+}
+.btn-secondary:hover{border-color:var(--blue);color:var(--blue);transform:translateY(-1px)}
+.hero-trust{
+  display:flex;align-items:center;gap:1rem;flex-wrap:wrap;
+}
+.trust-item{
+  display:flex;align-items:center;gap:.5rem;
+  font-size:.82rem;color:var(--text-m);font-weight:500;
+}
+.trust-icon{
+  width:28px;height:28px;background:var(--blue-xl);border-radius:var(--r-full);
+  display:flex;align-items:center;justify-content:center;font-size:.85rem;
+  border:1px solid rgba(61,107,248,.15);
+}
+.hero-divider{width:1px;height:16px;background:var(--border)}
+
+/* Hero cards visual */
+.hero-visual{position:relative}
+.hero-cards-wrap{
+  display:grid;grid-template-columns:1fr 1fr;gap:.9rem;
+  transform:perspective(900px) rotateY(-4deg) rotateX(2deg);
+  transition:transform .5s ease;
+}
+.hero-cards-wrap:hover{transform:perspective(900px) rotateY(0) rotateX(0)}
+.hcard{
+  border-radius:var(--r-lg);overflow:hidden;position:relative;
+  border:1px solid var(--border);background:var(--card);
+  box-shadow:0 8px 30px rgba(0,0,0,.06);
+}
+.hcard:nth-child(1){grid-row:span 2;aspect-ratio:.65}
+.hcard:nth-child(2){aspect-ratio:1}
+.hcard:nth-child(3){aspect-ratio:1}
+.hcard-bg{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:3rem;
+}
+.hcard:nth-child(1) .hcard-bg{background:linear-gradient(155deg,#dbeafe,#ede9fe,#fce7f3)}
+.hcard:nth-child(2) .hcard-bg{background:linear-gradient(135deg,#fef3c7,#fde68a)}
+.hcard:nth-child(3) .hcard-bg{background:linear-gradient(135deg,#d1fae5,#a7f3d0)}
+.hcard-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(15,23,42,.45) 0%,transparent 50%);
+}
+.hcard-label{
+  position:absolute;bottom:.8rem;right:.8rem;
+  background:rgba(255,255,255,.92);backdrop-filter:blur(10px);
+  border-radius:var(--r-sm);padding:.3rem .7rem;
+  font-size:.72rem;font-weight:700;color:var(--text);
+  border:1px solid var(--border);
+}
+/* floating badge */
+.hero-float-badge{
+  position:absolute;top:-20px;left:-20px;
+  background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+  padding:.7rem 1rem;display:flex;align-items:center;gap:.6rem;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+  animation:badgeFloat 4s ease-in-out infinite;
+}
+.hero-float-badge2{
+  position:absolute;bottom:20px;left:-30px;
+  background:#fff;border:1px solid var(--border);border-radius:var(--r-md);
+  padding:.6rem .9rem;
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+  animation:badgeFloat 5s ease-in-out infinite reverse;
+}
+@keyframes badgeFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.fbl-dot{width:10px;height:10px;border-radius:50%;background:#22c55e}
+.fbl-text{font-size:.78rem;font-weight:700;color:var(--text)}
+.fbl-sub{font-size:.68rem;color:var(--text-s)}
+
+/* ══════════════════════════════
+   BRANDS STRIP
+══════════════════════════════ */
+#brands{
+  padding:2.5rem 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+  background:var(--bg-soft);
+}
+.brands-label{
+  text-align:center;font-size:.78rem;color:var(--text-s);font-weight:500;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:1.5rem;
+}
+.brands-row{
+  display:flex;align-items:center;justify-content:center;
+  gap:3rem;flex-wrap:wrap;
+}
+.brand-item{
+  font-size:.95rem;font-weight:700;color:var(--text-s);
+  display:flex;align-items:center;gap:.4rem;letter-spacing:.5px;
+  transition:color .2s;
+}
+.brand-item:hover{color:var(--blue)}
+.brand-icon{font-size:1.1rem}
+
+/* ══════════════════════════════
+   MARQUEE
+══════════════════════════════ */
+#marquee-section{
+  position:relative;padding:3.5rem 0;overflow:hidden;
+  background:var(--bg);
+}
+.marquee-wrap{position:relative;height:90px}
+.ticker-strip{
+  position:absolute;width:160%;height:42px;
+  display:flex;align-items:center;white-space:nowrap;overflow:hidden;
+  left:-10%;
+}
+/* Strip A: rotates like \ (top-right to bottom-left) */
+.ticker-strip.strip-a{
+  background:var(--blue);
+  transform:rotate(-3deg);
+  top:8px;z-index:2;
+  box-shadow:0 3px 20px rgba(61,107,248,.2);
+}
+/* Strip B: rotates like / (top-left to bottom-right) — light ghost */
+.ticker-strip.strip-b{
+  background:transparent;
+  border-top:1.5px solid rgba(109,40,217,.18);
+  border-bottom:1.5px solid rgba(109,40,217,.18);
+  transform:rotate(+3deg);
+  top:40px;z-index:1;
+}
+.ticker-inner{
+  display:flex;align-items:center;
+  animation:tickFwd 24s linear infinite;
+  will-change:transform;
+}
+.strip-b .ticker-inner{animation-name:tickRev;animation-duration:30s}
+@keyframes tickFwd{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+@keyframes tickRev{0%{transform:translateX(-50%)}100%{transform:translateX(0)}}
+.ticker-item{
+  display:inline-flex;align-items:center;gap:.8rem;
+  padding:0 2rem;font-size:.85rem;font-weight:800;letter-spacing:.5px;white-space:nowrap;
+}
+.strip-a .ticker-item{color:#fff}
+.strip-b .ticker-item{color:var(--accent);opacity:.7}
+.ticker-sep{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.5}
+#marquee-section::before,#marquee-section::after{
+  content:'';position:absolute;top:0;bottom:0;width:80px;z-index:20;pointer-events:none;
+}
+#marquee-section::before{right:0;background:linear-gradient(to left,var(--bg),transparent)}
+#marquee-section::after{left:0;background:linear-gradient(to right,var(--bg),transparent)}
+
+/* ══════════════════════════════
+   HOW IT WORKS
+══════════════════════════════ */
+#how{padding:7rem 0;background:var(--bg-soft)}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:.4rem;
+  background:var(--blue-xl);color:var(--blue);
+  border:1px solid rgba(61,107,248,.2);
+  padding:.3rem .9rem;border-radius:var(--r-full);
+  font-size:.75rem;font-weight:700;letter-spacing:.5px;
+  margin-bottom:.9rem;
+}
+.sec-h{
+  font-size:clamp(1.7rem,3vw,2.5rem);font-weight:800;
+  color:var(--text);line-height:1.25;margin-bottom:.7rem;
+}
+.sec-sub{font-size:1rem;color:var(--text-m);line-height:1.75;max-width:500px}
+.how-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;
+  margin-top:3.5rem;
+}
+.how-card{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-lg);padding:2rem;
+  transition:border-color .25s,transform .25s,box-shadow .25s;
+  position:relative;overflow:hidden;
+}
+.how-card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:80px;height:80px;border-radius:0 var(--r-lg) 0 80px;
+  background:var(--blue-xl);
+  transition:all .3s;
+}
+.how-card:hover{border-color:rgba(61,107,248,.35);transform:translateY(-5px);box-shadow:0 12px 40px rgba(61,107,248,.1)}
+.how-card:hover::before{width:100px;height:100px}
+.how-num{
+  position:relative;z-index:1;
+  font-size:.7rem;font-weight:800;color:var(--blue);letter-spacing:2px;
+  margin-bottom:1.2rem;
+}
+.how-icon{
+  width:54px;height:54px;background:var(--blue-xl);border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.5rem;margin-bottom:1.2rem;border:1px solid rgba(61,107,248,.15);
+}
+.how-card h3{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.5rem}
+.how-card p{font-size:.88rem;color:var(--text-m);line-height:1.7}
+
+/* ══════════════════════════════
+   PRESETS
+══════════════════════════════ */
+#presets{padding:7rem 0;background:var(--bg)}
+.presets-head{text-align:center;margin-bottom:3rem}
+.presets-head .sec-sub{margin:0 auto}
+.presets-grid{
+  display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;
+}
+.preset-card{
+  border-radius:var(--r-lg);overflow:hidden;cursor:pointer;
+  position:relative;aspect-ratio:.72;
+  border:2px solid var(--border);background:var(--card);
+  transition:border-color .25s,transform .25s,box-shadow .25s;
+  box-shadow:0 2px 12px rgba(0,0,0,.05);
+}
+.preset-card:hover{border-color:var(--blue);transform:translateY(-4px);box-shadow:0 12px 35px rgba(61,107,248,.12)}
+.preset-card.active{border-color:var(--blue);box-shadow:0 8px 30px rgba(61,107,248,.2)}
+.preset-bg{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:2.8rem;transition:transform .5s cubic-bezier(.25,.46,.45,.94);
+}
+.preset-card:hover .preset-bg{transform:scale(1.07)}
+/* Real template images */
+.p1 .preset-bg{
+  background:url('public/templetes/Gemini_Generated_Image_bjb5ovbjb5ovbjb5.png') center/cover no-repeat;
+}
+.p2 .preset-bg{
+  background:url('public/templetes/Gemini_Generated_Image_aoh24raoh24raoh2.png') center/cover no-repeat;
+}
+.p3 .preset-bg{
+  background:url('public/templetes/Gemini_Generated_Image_py5xylpy5xylpy5x.png') center/cover no-repeat;
+}
+.p4 .preset-bg{
+  background:url('public/templetes/Gemini_Generated_Image_pxnj80pxnj80pxnj.png') center/cover no-repeat;
+}
+.p5 .preset-bg{
+  background:url('public/templetes/Gemini_Generated_Image_nz00j8nz00j8nz00.png') center/cover no-repeat;
+}
+.p6 .preset-bg{
+  background:url('public/templetes/Gemini_Generated_Image_64m1dc64m1dc64m1.png') center/cover no-repeat;
+}
+/* P7 — no template yet, use dark premium gradient */
+.p7 .preset-bg{
+  background:linear-gradient(155deg,#0f0c29,#302b63,#24243e);
+}
+.preset-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(15,23,42,.55) 0%,transparent 55%);
+  border-radius:var(--r-lg);
+}
+.preset-content{
+  position:absolute;inset:0;z-index:2;
+  display:flex;flex-direction:column;justify-content:flex-end;
+  align-items:center;padding:1rem;
+}
+.preset-title{
+  font-size:.9rem;font-weight:700;color:#fff;text-align:center;
+  text-shadow:0 2px 6px rgba(0,0,0,.4);margin-bottom:.3rem;
+}
+.preset-num{
+  font-size:.68rem;font-weight:600;
+  color:rgba(255,255,255,.7);letter-spacing:1.5px;
+}
+.preset-check{
+  position:absolute;top:.7rem;left:.7rem;z-index:3;
+  width:26px;height:26px;background:var(--blue);border-radius:50%;
+  display:none;align-items:center;justify-content:center;
+  font-size:.72rem;color:#fff;font-weight:800;
+  box-shadow:0 3px 10px rgba(61,107,248,.4);
+}
+.preset-card.active .preset-check{display:flex}
+.preset-badge{
+  position:absolute;top:.7rem;right:.7rem;z-index:3;
+  background:rgba(255,255,255,.9);backdrop-filter:blur(8px);
+  border-radius:var(--r-full);padding:.2rem .55rem;
+  font-size:.65rem;font-weight:700;color:var(--text);
+  border:1px solid var(--border);
+}
+
+/* ══════════════════════════════
+   FORM
+══════════════════════════════ */
+#form-section{padding:7rem 0;background:var(--bg-soft)}
+.form-wrap{max-width:640px;margin:0 auto}
+.form-card{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-xl);padding:2.5rem;
+  box-shadow:0 8px 40px rgba(0,0,0,.06);
+  position:relative;overflow:hidden;
+}
+.form-card::before{
+  content:'';position:absolute;top:0;right:0;
+  width:200px;height:200px;border-radius:0 var(--r-xl) 0 200px;
+  background:var(--blue-xxl);pointer-events:none;
+}
+.form-card-title{font-size:1.3rem;font-weight:800;color:var(--text);margin-bottom:.3rem}
+.form-card-sub{font-size:.88rem;color:var(--text-m);margin-bottom:2rem}
+
+/* Upload */
+.upload-zone{
+  border:2px dashed var(--border);border-radius:var(--r-lg);
+  background:var(--bg-soft);padding:2rem;text-align:center;
+  transition:all .25s;cursor:pointer;margin-bottom:1.5rem;
+  position:relative;overflow:hidden;
+}
+.upload-zone:hover{border-color:var(--blue);background:var(--blue-xxl)}
+.upload-zone.drag-over{border-color:var(--blue);background:var(--blue-xl)}
+.upload-zone-icon{
+  width:52px;height:52px;background:var(--blue-xl);border-radius:var(--r-md);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;margin:0 auto .8rem;border:1px solid rgba(61,107,248,.15);
+}
+.upload-text{font-size:.95rem;font-weight:600;color:var(--text);margin-bottom:.3rem}
+.upload-hint{font-size:.8rem;color:var(--text-s)}
+#photoPreview{
+  display:none;width:100%;max-height:180px;object-fit:cover;
+  border-radius:var(--r-md);margin-top:.8rem;border:1px solid var(--border);
+}
+#photoInput{display:none}
+
+/* Fields */
+.field{margin-bottom:1.2rem}
+.field label{
+  display:block;font-size:.82rem;font-weight:600;
+  color:var(--text);margin-bottom:.45rem;
+}
+.field label span{color:var(--blue)}
+.field input{
+  width:100%;background:var(--bg-soft);
+  border:1.5px solid var(--border);color:var(--text);
+  padding:.78rem 1rem;font-size:.92rem;
+  border-radius:var(--r-sm);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.field input:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(61,107,248,.1);
+  background:#fff;
+}
+.field input::placeholder{color:var(--text-s)}
+.cond-fields{max-height:0;overflow:hidden;transition:max-height .5s ease,opacity .4s;opacity:0}
+.cond-fields.open{max-height:400px;opacity:1}
+.fields-row{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+
+.btn-submit{
+  width:100%;background:var(--blue);color:#fff;
+  font-size:1rem;font-weight:800;padding:1rem;
+  border:none;border-radius:var(--r-full);cursor:pointer;
+  transition:background .2s,transform .15s,box-shadow .2s;
+  box-shadow:0 6px 20px rgba(61,107,248,.3);
+  margin-top:.5rem;letter-spacing:.5px;
+  position:relative;overflow:hidden;
+}
+.btn-submit::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.2) 50%,transparent 70%);
+  transform:translateX(-100%);
+}
+.btn-submit:hover{background:var(--blue-d);transform:translateY(-2px);box-shadow:0 8px 26px rgba(61,107,248,.4)}
+.btn-submit:hover::after{animation:shimmer .6s ease forwards}
+@keyframes shimmer{to{transform:translateX(100%)}}
+.btn-submit:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+/* ── DYNAMIC FORM FIELDS ── */
+.form-preset-header{
+  display:flex;align-items:center;gap:.8rem;
+  background:var(--blue-xxl);border:1px solid rgba(61,107,248,.15);
+  border-radius:var(--r-md);padding:.9rem 1.1rem;margin-bottom:1.8rem;
+}
+.fph-icon{
+  width:40px;height:40px;background:var(--blue-xl);border-radius:var(--r-sm);
+  display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;
+}
+.fph-title{font-size:.92rem;font-weight:700;color:var(--text)}
+.fph-sub{font-size:.78rem;color:var(--text-m);margin-top:.1rem}
+
+/* Chips (radio-button style) */
+.chip-group{display:flex;flex-wrap:wrap;gap:.5rem;margin-top:.4rem}
+.chip{
+  display:inline-flex;align-items:center;gap:.35rem;
+  background:var(--bg-soft);border:1.5px solid var(--border);
+  border-radius:var(--r-full);padding:.38rem .9rem;
+  font-size:.82rem;font-weight:600;color:var(--text-m);
+  cursor:pointer;transition:all .2s;user-select:none;
+}
+.chip:hover{border-color:var(--blue);color:var(--blue)}
+.chip.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.chip-dot{width:7px;height:7px;border-radius:50%;background:currentColor;opacity:.6}
+
+/* Styled select */
+.dyn-select{
+  width:100%;background:var(--bg-soft);border:1.5px solid var(--border);
+  color:var(--text);padding:.78rem 1rem;font-size:.9rem;
+  border-radius:var(--r-sm);outline:none;cursor:pointer;
+  transition:border-color .2s,box-shadow .2s;appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:left .9rem center;padding-left:2.2rem;
+}
+.dyn-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(61,107,248,.1)}
+
+/* Empty state */
+.form-empty-state{
+  text-align:center;padding:2.5rem 1rem;
+  border:2px dashed var(--border);border-radius:var(--r-lg);
+}
+.form-empty-icon{font-size:2.5rem;margin-bottom:.8rem;opacity:.4}
+.form-empty-text{font-size:.9rem;color:var(--text-s);font-weight:500}
+
+/* Section divider inside form */
+.form-divider{
+  display:flex;align-items:center;gap:.8rem;
+  margin:1.4rem 0 1rem;font-size:.75rem;font-weight:700;
+  color:var(--text-s);letter-spacing:.5px;text-transform:uppercase;
+}
+.form-divider::before,.form-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* Toggle switch for optional fields */
+.toggle-row{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:.8rem;
+}
+.toggle-label{font-size:.85rem;font-weight:600;color:var(--text)}
+.toggle{position:relative;width:40px;height:22px;cursor:pointer}
+.toggle input{display:none}
+.toggle-track{
+  position:absolute;inset:0;background:var(--border);border-radius:var(--r-full);
+  transition:background .2s;
+}
+.toggle input:checked ~ .toggle-track{background:var(--blue)}
+.toggle-thumb{
+  position:absolute;top:3px;right:3px;width:16px;height:16px;
+  background:#fff;border-radius:50%;transition:right .2s;
+  box-shadow:0 1px 4px rgba(0,0,0,.15);
+}
+.toggle input:checked ~ .toggle-thumb{right:calc(100% - 19px)}
+
+/* ══════════════════════════════
+   LOADING
+══════════════════════════════ */
+#loading{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(255,255,255,.96);
+  backdrop-filter:blur(16px);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+}
+#loading.active{display:flex}
+.loader-wrap{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-xl);padding:3rem;text-align:center;
+  box-shadow:0 20px 60px rgba(0,0,0,.08);
+  max-width:380px;width:90%;
+  position:relative;overflow:hidden;
+}
+.loader-wrap::before{
+  content:'';position:absolute;top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:conic-gradient(transparent 0deg,rgba(61,107,248,.04) 90deg,transparent 180deg);
+  animation:conicSpin 6s linear infinite;
+}
+@keyframes conicSpin{to{transform:rotate(360deg)}}
+.loader-orb-wrap{
+  width:110px;height:110px;margin:0 auto 2rem;position:relative;
+}
+.loader-ring1{
+  position:absolute;inset:0;border-radius:50%;
+  border:2px solid rgba(61,107,248,.15);
+  animation:ringScale 2s ease-in-out infinite;
+}
+.loader-ring2{
+  position:absolute;inset:10px;border-radius:50%;
+  border:2px solid rgba(61,107,248,.25);
+  animation:ringScale 2s .4s ease-in-out infinite;
+}
+@keyframes ringScale{0%,100%{transform:scale(1);opacity:.6}50%{transform:scale(1.06);opacity:1}}
+.loader-crescent{
+  width:64px;height:64px;position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  animation:spin 3s linear infinite;
+}
+@keyframes spin{to{transform:translate(-50%,-50%) rotate(360deg)}}
+.loader-msg{
+  font-size:1rem;font-weight:600;color:var(--text);
+  margin-bottom:1.5rem;min-height:2.5em;line-height:1.6;
+  transition:opacity .35s;
+}
+.loader-progress{
+  height:4px;background:var(--blue-xl);border-radius:var(--r-full);overflow:hidden;
+}
+.loader-bar{
+  height:100%;background:linear-gradient(to left,var(--blue-l),var(--blue));
+  border-radius:var(--r-full);width:0;
+  animation:progAnim 9s ease-in-out forwards;
+}
+@keyframes progAnim{
+  0%{width:0}8%{width:12%}25%{width:38%}55%{width:65%}80%{width:84%}100%{width:94%}
+}
+.loader-steps{
+  display:flex;justify-content:center;gap:1.5rem;margin-top:1.2rem;
+}
+.loader-step{
+  font-size:.75rem;color:var(--text-s);font-weight:500;
+  display:flex;align-items:center;gap:.3rem;
+}
+.loader-step.done{color:var(--blue)}
+.loader-step-dot{width:6px;height:6px;border-radius:50%;background:var(--border)}
+.loader-step.done .loader-step-dot{background:var(--blue)}
+
+/* ══════════════════════════════
+   RESULT
+══════════════════════════════ */
+#result{padding:7rem 0;background:var(--bg);display:none}
+.result-center{max-width:500px;margin:0 auto;text-align:center}
+.result-img-wrap{
+  position:relative;display:inline-block;margin-bottom:2rem;
+  border-radius:var(--r-xl);overflow:hidden;
+  box-shadow:0 20px 60px rgba(61,107,248,.15);
+  border:3px solid rgba(109,40,217,.6);
+}
+.result-img-wrap::after{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 50%,rgba(109,40,217,.08),transparent 70%);
+  animation:goldGlow 3s ease-in-out infinite;
+}
+@keyframes goldGlow{0%,100%{opacity:.5}50%{opacity:1}}
+#resultImg{display:block;max-width:400px;width:100%;border-radius:var(--r-xl)}
+.result-card{
+  background:var(--card);border:1.5px solid rgba(109,40,217,.3);
+  border-radius:var(--r-lg);padding:2rem;margin-bottom:1.5rem;
+  position:relative;overflow:hidden;
+  box-shadow:0 4px 20px rgba(109,40,217,.08);
+}
+.result-card::before{
+  content:'';position:absolute;top:0;right:0;left:0;height:3px;
+  background:linear-gradient(to left,transparent,var(--accent),transparent);
+}
+.result-occasion{
+  font-size:.75rem;letter-spacing:2.5px;color:var(--accent);
+  font-weight:700;margin-bottom:.7rem;text-transform:uppercase;
+}
+.result-divider{
+  width:60px;height:1px;
+  background:linear-gradient(to left,transparent,var(--accent),transparent);
+  margin:.7rem auto;
+}
+.result-ornament{color:var(--accent);font-size:1rem;margin:.5rem 0;opacity:.5}
+.result-greeting{font-size:.95rem;color:var(--text-m);line-height:2;text-align:center}
+.result-name{color:var(--blue);font-weight:800}
+.result-actions{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.btn-dl{
+  background:var(--blue);color:#fff;font-size:.9rem;font-weight:700;
+  padding:.75rem 1.8rem;border:none;border-radius:var(--r-full);cursor:pointer;
+  transition:all .2s;box-shadow:0 4px 14px rgba(61,107,248,.3);
+  display:flex;align-items:center;gap:.4rem;
+}
+.btn-dl:hover{background:var(--blue-d);transform:translateY(-2px)}
+.btn-share2{
+  background:#fff;color:var(--text);font-size:.9rem;font-weight:600;
+  padding:.75rem 1.8rem;border:1.5px solid var(--border);border-radius:var(--r-full);
+  cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:.4rem;
+}
+.btn-share2:hover{border-color:var(--blue);color:var(--blue)}
+
+/* ══════════════════════════════
+   SOCIAL PROOF
+══════════════════════════════ */
+#social{padding:7rem 0;background:var(--bg-soft)}
+.social-head{text-align:center;margin-bottom:3.5rem}
+.swiper-proof{padding-bottom:3rem!important}
+.proof-card{
+  background:var(--card);border:1.5px solid var(--border);
+  border-radius:var(--r-lg);overflow:hidden;cursor:pointer;
+  transition:all .25s;
+}
+.proof-card:hover{border-color:var(--blue);transform:translateY(-4px);box-shadow:0 10px 30px rgba(61,107,248,.1)}
+.proof-thumb{
+  aspect-ratio:.75;position:relative;overflow:hidden;
+  display:flex;align-items:center;justify-content:center;font-size:2.5rem;
+}
+.pc1 .proof-thumb{background:url('public/templetes/Gemini_Generated_Image_bjb5ovbjb5ovbjb5.png') center/cover no-repeat}
+.pc2 .proof-thumb{background:url('public/templetes/Gemini_Generated_Image_aoh24raoh24raoh2.png') center/cover no-repeat}
+.pc3 .proof-thumb{background:url('public/templetes/Gemini_Generated_Image_py5xylpy5xylpy5x.png') center/cover no-repeat}
+.pc4 .proof-thumb{background:url('public/templetes/Gemini_Generated_Image_pxnj80pxnj80pxnj.png') center/cover no-repeat}
+.pc5 .proof-thumb{background:url('public/templetes/Gemini_Generated_Image_nz00j8nz00j8nz00.png') center/cover no-repeat}
+.pc6 .proof-thumb{background:url('public/templetes/Gemini_Generated_Image_64m1dc64m1dc64m1.png') center/cover no-repeat}
+.pc7 .proof-thumb{background:linear-gradient(155deg,#0f0c29,#302b63,#24243e)}
+.proof-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(15,23,42,.5) 0%,transparent 55%)}
+.proof-icon{display:none}
+.proof-info{padding:.9rem 1rem}
+.proof-style{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.3rem}
+.proof-tag{
+  display:inline-block;background:var(--blue-xl);color:var(--blue);
+  font-size:.7rem;font-weight:700;letter-spacing:.8px;
+  padding:.2rem .55rem;border-radius:var(--r-full);
+}
+.swiper-pagination-bullet{background:rgba(61,107,248,.25)!important;opacity:1!important}
+.swiper-pagination-bullet-active{background:var(--blue)!important}
+
+/* ══════════════════════════════
+   FOOTER
+══════════════════════════════ */
+#footer{
+  background:var(--text);color:#fff;
+  padding:5rem 0 2rem;
+}
+.footer-grid{
+  display:grid;grid-template-columns:1.6fr 1fr 1fr 1.4fr;
+  gap:3rem;margin-bottom:4rem;
+}
+.footer-logo-text{
+  font-size:1.2rem;font-weight:800;color:#fff;margin-bottom:.8rem;
+}
+.footer-logo-text span{color:var(--blue-l)}
+.footer-desc{font-size:.88rem;color:rgba(255,255,255,.5);line-height:1.8;margin-bottom:1.5rem;max-width:240px}
+.footer-mini-cards{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.fmc{
+  border-radius:var(--r-md);overflow:hidden;aspect-ratio:.7;
+  position:relative;cursor:pointer;border:1px solid rgba(255,255,255,.08);
+  transition:border-color .2s,transform .2s;
+}
+.fmc:hover{border-color:rgba(61,107,248,.4);transform:scale(1.02)}
+.fmc1{background:url('public/templetes/Gemini_Generated_Image_pxnj80pxnj80pxnj.png') center/cover no-repeat}
+.fmc2{background:url('public/templetes/Gemini_Generated_Image_64m1dc64m1dc64m1.png') center/cover no-repeat}
+.fmc-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-60%);font-size:1.8rem;opacity:.2}
+.fmc-label{
+  position:absolute;bottom:.6rem;right:.6rem;left:.6rem;
+  font-size:.7rem;font-weight:700;color:rgba(255,255,255,.8);
+}
+.footer-col-title{
+  font-size:.72rem;font-weight:700;letter-spacing:2.5px;
+  color:rgba(255,255,255,.4);text-transform:uppercase;margin-bottom:1.4rem;
+}
+.footer-links{list-style:none;display:flex;flex-direction:column;gap:.75rem}
+.footer-links a{
+  font-size:.88rem;color:rgba(255,255,255,.55);font-weight:400;
+  transition:color .2s;display:flex;align-items:center;gap:.4rem;
+}
+.footer-links a:hover{color:#fff}
+.nl-text{font-size:.88rem;color:rgba(255,255,255,.5);line-height:1.75;margin-bottom:1.1rem}
+.nl-form{display:flex;gap:0;border-radius:var(--r-full);overflow:hidden;border:1.5px solid rgba(255,255,255,.12)}
+.nl-input{
+  flex:1;background:rgba(255,255,255,.06);border:none;
+  color:#fff;padding:.7rem 1rem;font-size:.85rem;outline:none;
+  direction:rtl;
+}
+.nl-input::placeholder{color:rgba(255,255,255,.3)}
+.nl-btn{
+  background:var(--blue);color:#fff;border:none;
+  padding:.7rem 1.1rem;font-size:.82rem;font-weight:700;cursor:pointer;
+  transition:background .2s;white-space:nowrap;
+}
+.nl-btn:hover{background:var(--blue-d)}
+.social-icons{display:flex;gap:.6rem;margin-top:1.3rem}
+.soc-btn{
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  border:1px solid rgba(255,255,255,.12);border-radius:var(--r-full);
+  color:rgba(255,255,255,.5);font-size:.85rem;cursor:pointer;
+  transition:all .2s;text-decoration:none;
+}
+.soc-btn:hover{background:var(--blue);border-color:var(--blue);color:#fff}
+.footer-bottom{
+  border-top:1px solid rgba(255,255,255,.08);
+  padding-top:1.8rem;display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:1rem;
+}
+.footer-copy{font-size:.8rem;color:rgba(255,255,255,.3)}
+.footer-legal{display:flex;gap:1.5rem}
+.footer-legal a{font-size:.8rem;color:rgba(255,255,255,.3);transition:color .2s}
+.footer-legal a:hover{color:#fff}
+
+/* ══════════════════════════════
+   TOAST
+══════════════════════════════ */
+#toast{
+  position:fixed;bottom:2rem;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--text);color:#fff;
+  padding:.75rem 1.8rem;border-radius:var(--r-full);
+  font-size:.88rem;font-weight:600;z-index:9998;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;max-width:90%;text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.15);
+}
+#toast.show{transform:translateX(-50%) translateY(0)}
+
+/* ══════════════════════════════
+   RESPONSIVE
+══════════════════════════════ */
+@media(max-width:1024px){
+  .hero-wrap{grid-template-columns:1fr;gap:3rem;padding-top:6rem}
+  .hero-cards-wrap{max-width:380px;margin:0 auto}
+  .presets-grid{grid-template-columns:repeat(3,1fr)}
+  .footer-grid{grid-template-columns:1fr 1fr}
+  .footer-grid>:first-child,.footer-grid>:last-child{grid-column:span 2}
+}
+@media(max-width:768px){
+  .nav-links{display:none}
+  .how-grid{grid-template-columns:1fr;gap:1.2rem}
+  .presets-grid{grid-template-columns:repeat(2,1fr)}
+  .fields-row{grid-template-columns:1fr}
+  .footer-grid{grid-template-columns:1fr}
+  .footer-grid>:first-child,.footer-grid>:last-child{grid-column:span 1}
+  .footer-bottom{flex-direction:column;text-align:center}
+  .footer-legal{justify-content:center}
+  .hero-btns{justify-content:center}
+  .hero-trust{justify-content:center}
+}
+@media(max-width:480px){
+  .presets-grid{grid-template-columns:1fr 1fr}
+  .form-card{padding:1.8rem 1.4rem}
+  .hero-h1{font-size:2rem}
+}
+
+/* ANIM CLASSES */
+.anim-up{opacity:0;transform:translateY(35px)}
+.anim-in{opacity:0;transform:scale(.94)}
+.anim-left{opacity:0;transform:translateX(-30px)}
+</style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav id="navbar">
+  <div class="nav-inner">
+    <div class="nav-logo">⚡ <span>برق<strong style="color:var(--blue)"> ستديو</strong></span></div>
+    <ul class="nav-links">
+      <li><a href="#how">كيف يعمل</a></li>
+      <li><a href="#presets">الأستايلات</a></li>
+      <li><a href="#numbers">أرقامنا</a></li>
+      <li><a href="#footer">تواصل معنا</a></li>
+    </ul>
+    <div style="display:flex;align-items:center;gap:.8rem">
+      <input type="text" id="apiKeyInput" class="nav-api" placeholder="🔑 مفتاح fal.ai API" autocomplete="off">
+      <a href="https://wa.me/966562884656?text=السلام+عليكم،+أبي+أجرب+تهنئة+العيد" target="_blank" style="text-decoration:none"><button class="nav-cta">واتساب ⚡</button></a>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-orb"></div>
+  <div class="hero-orb-2"></div>
+  <div class="hero-wrap">
+    <div class="hero-text">
+      <div class="hero-badge">⚡ هدية العيد من برق ستديو</div>
+      <h1 class="hero-h1">
+        خلك برق —<br>
+        <span class="blue">تهنئة العيد</span><br>
+        السينمائية الفاخرة ✦
+      </h1>
+      <p class="hero-sub">
+        برق ستديو يقدّم لك تهنئة عيد استثنائية بالذكاء الاصطناعي. ارفع صورتك، اختر الأجواء، واستلم تهنئتك خلال ثوانٍ — جاهزة للنشر على كل منصاتك.
+      </p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="document.getElementById('presets').scrollIntoView({behavior:'smooth'})">⚡ صنّع تهنئتك الآن</button>
+        <a href="https://wa.me/966562884656?text=السلام+عليكم،+أبي+أجرب+تهنئة+العيد+من+برق" target="_blank" style="text-decoration:none">
+          <button class="btn-secondary">💬 تواصل معنا</button>
+        </a>
+      </div>
+      <div class="hero-trust">
+        <div class="trust-item">
+          <div class="trust-icon">📸</div>
+          <span>+500 تهنئة</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="trust-item">
+          <div class="trust-icon">⚡</div>
+          <span>تسليم 48h</span>
+        </div>
+        <div class="hero-divider"></div>
+        <div class="trust-item">
+          <div class="trust-icon">⭐</div>
+          <span>97% رضا</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-float-badge">
+        <div class="fbl-dot"></div>
+        <div>
+          <div class="fbl-text">+50 علامة تجارية وثقت بنا ✓</div>
+          <div class="fbl-sub">سير فرانسيس · غريس · عسّاف · سافير</div>
+        </div>
+      </div>
+      <div class="hero-float-badge2">
+        <div class="fbl-text">⚡ مدعوم بـ fal.ai FLUX Dev</div>
+      </div>
+      <div class="hero-cards-wrap">
+        <div class="hcard">
+          <div class="hcard-bg">🌙</div>
+          <div class="hcard-overlay"></div>
+          <div class="hcard-label">سينمائي فاخر</div>
+        </div>
+        <div class="hcard">
+          <div class="hcard-bg">🌅</div>
+          <div class="hcard-overlay"></div>
+          <div class="hcard-label">صباح العيد</div>
+        </div>
+        <div class="hcard">
+          <div class="hcard-bg">🏮</div>
+          <div class="hcard-overlay"></div>
+          <div class="hcard-label">مجلس دافئ</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- BRANDS -->
+<div id="brands">
+  <div class="wrap">
+    <div class="brands-label">عملاء وثقوا في برق ستديو</div>
+    <div class="brands-row">
+      <div class="brand-item"><span class="brand-icon">👑</span> سير فرانسيس</div>
+      <div class="brand-item"><span class="brand-icon">🎀</span> غريس</div>
+      <div class="brand-item"><span class="brand-icon">🌸</span> عسّاف</div>
+      <div class="brand-item"><span class="brand-icon">💎</span> سافير</div>
+      <div class="brand-item"><span class="brand-icon">🌿</span> إحساس خاص</div>
+    </div>
+  </div>
+</div>
+
+<!-- MARQUEE -->
+<div id="marquee-section">
+  <div class="marquee-wrap">
+    <div class="ticker-strip strip-a">
+      <div class="ticker-inner">
+        <span class="ticker-item">صنع تهنئتك الآن <span class="ticker-sep"></span></span>
+        <span class="ticker-item">عيد مبارك ✦ <span class="ticker-sep"></span></span>
+        <span class="ticker-item">تهنئة فاخرة بالذكاء الاصطناعي <span class="ticker-sep"></span></span>
+        <span class="ticker-item">صنع تهنئتك الآن <span class="ticker-sep"></span></span>
+        <span class="ticker-item">عيد مبارك ✦ <span class="ticker-sep"></span></span>
+        <span class="ticker-item">تهنئة فاخرة بالذكاء الاصطناعي <span class="ticker-sep"></span></span>
+        <span class="ticker-item">صنع تهنئتك الآن <span class="ticker-sep"></span></span>
+        <span class="ticker-item">عيد مبارك ✦ <span class="ticker-sep"></span></span>
+        <span class="ticker-item">تهنئة فاخرة بالذكاء الاصطناعي <span class="ticker-sep"></span></span>
+        <span class="ticker-item">صنع تهنئتك الآن <span class="ticker-sep"></span></span>
+        <span class="ticker-item">عيد مبارك ✦ <span class="ticker-sep"></span></span>
+        <span class="ticker-item">تهنئة فاخرة بالذكاء الاصطناعي <span class="ticker-sep"></span></span>
+      </div>
+    </div>
+    <div class="ticker-strip strip-b">
+      <div class="ticker-inner">
+        <span class="ticker-item">تقبل الله طاعاتكم <span class="ticker-sep"></span></span>
+        <span class="ticker-item">كل عام وأنتم بخير <span class="ticker-sep"></span></span>
+        <span class="ticker-item">عيد الفطر المبارك <span class="ticker-sep"></span></span>
+        <span class="ticker-item">تقبل الله طاعاتكم <span class="ticker-sep"></span></span>
+        <span class="ticker-item">كل عام وأنتم بخير <span class="ticker-sep"></span></span>
+        <span class="ticker-item">عيد الفطر المبارك <span class="ticker-sep"></span></span>
+        <span class="ticker-item">تقبل الله طاعاتكم <span class="ticker-sep"></span></span>
+        <span class="ticker-item">كل عام وأنتم بخير <span class="ticker-sep"></span></span>
+        <span class="ticker-item">عيد الفطر المبارك <span class="ticker-sep"></span></span>
+        <span class="ticker-item">تقبل الله طاعاتكم <span class="ticker-sep"></span></span>
+        <span class="ticker-item">كل عام وأنتم بخير <span class="ticker-sep"></span></span>
+        <span class="ticker-item">عيد الفطر المبارك <span class="ticker-sep"></span></span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:1rem">
+      <div class="sec-tag">كيف يعمل</div>
+      <h2 class="sec-h">أربع خطوات وخلاص</h2>
+      <p class="sec-sub" style="margin:0 auto">نفس أسلوب برق ستديو في التصوير — بس هذه المرة لتهنئة العيد الخاصة بك.</p>
+    </div>
+    <div class="how-grid" style="grid-template-columns:repeat(4,1fr)">
+      <div class="how-card anim-up">
+        <div class="how-num">STEP / 01</div>
+        <div class="how-icon">💬</div>
+        <h3>تواصل معنا</h3>
+        <p>تواصل معنا على واتساب أو استخدم الأداة مباشرة وقولنا لمن التهنئة.</p>
+      </div>
+      <div class="how-card anim-up" style="--d:.1s">
+        <div class="how-num">STEP / 02</div>
+        <div class="how-icon">📸</div>
+        <h3>ارسل صورة الشخص</h3>
+        <p>ارفع صورة واضحة للوجه مع وصف بسيط للأستايل اللي تبيه.</p>
+      </div>
+      <div class="how-card anim-up" style="--d:.2s">
+        <div class="how-num">STEP / 03</div>
+        <div class="how-icon">⚡</div>
+        <h3>نشتغل بالسحر</h3>
+        <p>فريق برق يبدأ الشغل فوراً بالذكاء الاصطناعي وتحصل على معاينة أولية.</p>
+      </div>
+      <div class="how-card anim-up" style="--d:.3s">
+        <div class="how-num">STEP / 04</div>
+        <div class="how-icon">🎉</div>
+        <h3>استلم وانشر</h3>
+        <p>تستلم تهنئتك خلال 48 ساعة جاهزة للنشر على انستقرام، تيك توك، وسناب.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PRESETS -->
+<section id="presets">
+  <div class="wrap">
+    <div class="presets-head">
+      <div class="sec-tag">الأستايلات</div>
+      <h2 class="sec-h">اختر ستايلك</h2>
+      <p class="sec-sub">كل أستايل بروحه وطابعه الخاص — اختر الأجواء التي تناسب شخصية المستلم.</p>
+    </div>
+    <div class="presets-grid" id="presetsGrid">
+      <div class="preset-card p1 anim-in" data-id="1">
+        <div class="preset-bg"></div>
+        <div class="preset-overlay"></div>
+        <div class="preset-content">
+          <div class="preset-title">سينمائي فاخر</div>
+          <div class="preset-num">01</div>
+        </div>
+        <div class="preset-check">✓</div>
+        <div class="preset-badge">فاخر</div>
+      </div>
+      <div class="preset-card p2 anim-in" data-id="2" style="--d:.07s">
+        <div class="preset-bg"></div>
+        <div class="preset-overlay"></div>
+        <div class="preset-content">
+          <div class="preset-title">أنثوي ناعم</div>
+          <div class="preset-num">02</div>
+        </div>
+        <div class="preset-check">✓</div>
+        <div class="preset-badge">ناعم</div>
+      </div>
+      <div class="preset-card p3 anim-in" data-id="3" style="--d:.14s">
+        <div class="preset-bg"></div>
+        <div class="preset-overlay"></div>
+        <div class="preset-content">
+          <div class="preset-title">عصري راقٍ</div>
+          <div class="preset-num">03</div>
+        </div>
+        <div class="preset-check">✓</div>
+        <div class="preset-badge">راقٍ</div>
+      </div>
+      <div class="preset-card p4 anim-in" data-id="4" style="--d:.21s">
+        <div class="preset-bg"></div>
+        <div class="preset-overlay"></div>
+        <div class="preset-content">
+          <div class="preset-title">صباح العيد</div>
+          <div class="preset-num">04</div>
+        </div>
+        <div class="preset-check">✓</div>
+        <div class="preset-badge">دافئ</div>
+      </div>
+      <div class="preset-card p5 anim-in" data-id="5" style="--d:.28s">
+        <div class="preset-bg"></div>
+        <div class="preset-overlay"></div>
+        <div class="preset-content">
+          <div class="preset-title">فناء العيد</div>
+          <div class="preset-num">05</div>
+        </div>
+        <div class="preset-check">✓</div>
+        <div class="preset-badge">كلاسيك</div>
+      </div>
+      <div class="preset-card p6 anim-in" data-id="6" style="--d:.35s">
+        <div class="preset-bg"></div>
+        <div class="preset-overlay"></div>
+        <div class="preset-content">
+          <div class="preset-title">مجلس دافئ</div>
+          <div class="preset-num">06</div>
+        </div>
+        <div class="preset-check">✓</div>
+        <div class="preset-badge">دافئ</div>
+      </div>
+      <div class="preset-card p7 anim-in" data-id="7" style="--d:.42s">
+        <div class="preset-bg"></div>
+        <div class="preset-overlay"></div>
+        <div class="preset-content">
+          <div class="preset-title">هيبة العيد</div>
+          <div class="preset-num">07</div>
+        </div>
+        <div class="preset-check">✓</div>
+        <div class="preset-badge">مهيب</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORM -->
+<section id="form-section">
+  <div class="wrap">
+    <div class="form-wrap">
+      <div style="text-align:center;margin-bottom:2.5rem">
+        <div class="sec-tag">أنشئ تهنئتك</div>
+        <h2 class="sec-h">أدخل التفاصيل</h2>
+        <p class="sec-sub" style="margin:0 auto">خصّص كل خيار وسيبني الذكاء الاصطناعي الصورة بناءً عليها.</p>
+      </div>
+      <div class="form-card anim-up">
+
+        <!-- ─── UPLOAD (دائم) ─── -->
+        <div class="form-divider">الصورة الأصلية</div>
+        <div class="upload-zone" id="uploadZone">
+          <div class="upload-zone-icon">📷</div>
+          <div class="upload-text">ارفع صورتك هنا</div>
+          <div class="upload-hint">اسحب وأفلت أو انقر للاختيار — JPG / PNG</div>
+          <img id="photoPreview" alt="معاينة">
+          <input type="file" id="photoInput" accept="image/*">
+        </div>
+
+        <!-- ─── RECIPIENT NAME (دائم) ─── -->
+        <div class="field">
+          <label for="recipientName">اسم المستلم <span>*</span></label>
+          <input type="text" id="recipientName" placeholder="مثال: أبو محمد" maxlength="40">
+        </div>
+
+        <!-- ─── DYNAMIC PRESET FIELDS ─── -->
+        <div id="presetFormArea">
+          <div class="form-empty-state" id="formEmptyState">
+            <div class="form-empty-icon">🎨</div>
+            <div class="form-empty-text">اختر أستايلاً من الأعلى لتظهر خيارات التخصيص</div>
+          </div>
+        </div>
+
+        <button class="btn-submit" id="submitBtn" onclick="generateGreeting()" style="margin-top:1.2rem">
+          ✦ ولّد تهنئتي ✦
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- LOADING -->
+<div id="loading">
+  <div class="loader-wrap">
+    <div class="loader-orb-wrap">
+      <div class="loader-ring1"></div>
+      <div class="loader-ring2"></div>
+      <svg class="loader-crescent" viewBox="0 0 80 80" fill="none">
+        <path d="M40 8C26 8 15 19 15 33s11 25 25 25c-8 0-15-7-15-15s7-15 15-15 15 7 15 15c0 8-7 15-15 15 14 0 25-11 25-25S54 8 40 8Z"
+          stroke="#3D6BF8" stroke-width="1.5" fill="none"/>
+        <circle cx="56" cy="16" r="2.5" fill="#3D6BF8" opacity=".5"/>
+        <circle cx="60" cy="10" r="1.5" fill="#3D6BF8" opacity=".35"/>
+      </svg>
+    </div>
+    <div class="loader-msg" id="loaderMsg">لحظة يا غالي، الذكاء يشتغل لك 🌙</div>
+    <div class="loader-progress"><div class="loader-bar" id="loaderBar"></div></div>
+    <div class="loader-steps">
+      <div class="loader-step done" id="step1"><span class="loader-step-dot"></span>تحليل الصورة</div>
+      <div class="loader-step" id="step2"><span class="loader-step-dot"></span>التوليد</div>
+      <div class="loader-step" id="step3"><span class="loader-step-dot"></span>التشطيب</div>
+    </div>
+  </div>
+</div>
+
+<!-- RESULT -->
+<section id="result">
+  <div class="wrap">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="sec-tag">النتيجة</div>
+      <h2 class="sec-h">تهنئتك جاهزة ✨</h2>
+    </div>
+    <div class="result-center">
+      <div class="result-img-wrap">
+        <img id="resultImg" src="" alt="تهنئة العيد">
+      </div>
+      <div class="result-card" id="greetingCard">
+        <div class="result-occasion">بمناسبة عيد الفطر المبارك</div>
+        <div class="result-divider"></div>
+        <div class="result-ornament">❧ ✦ ❧</div>
+        <div class="result-greeting" id="greetingText"></div>
+        <div class="result-ornament">❧ ✦ ❧</div>
+        <div class="result-divider"></div>
+      </div>
+      <div class="result-actions">
+        <button class="btn-dl" onclick="downloadResult()">⬇ تحميل الصورة</button>
+        <button class="btn-share2" onclick="shareResult()">↗ مشاركة</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SOCIAL PROOF -->
+<section id="social">
+  <div class="wrap">
+    <div class="social-head">
+      <div class="sec-tag">معرض الأعمال</div>
+      <h2 class="sec-h">أمثلة من كل أستايل</h2>
+      <p class="sec-sub" style="margin:0 auto">نماذج من التهانئ المولودة بالذكاء الاصطناعي لكل أجواء.</p>
+    </div>
+    <div class="swiper swiper-proof">
+      <div class="swiper-wrapper">
+        <div class="swiper-slide"><div class="proof-card pc1"><div class="proof-thumb"><div class="proof-overlay"></div></div><div class="proof-info"><div class="proof-style">سينمائي فاخر</div><span class="proof-tag">PRESET 01</span></div></div></div>
+        <div class="swiper-slide"><div class="proof-card pc2"><div class="proof-thumb"><div class="proof-overlay"></div></div><div class="proof-info"><div class="proof-style">أنثوي ناعم</div><span class="proof-tag">PRESET 02</span></div></div></div>
+        <div class="swiper-slide"><div class="proof-card pc3"><div class="proof-thumb"><div class="proof-overlay"></div></div><div class="proof-info"><div class="proof-style">عصري راقٍ</div><span class="proof-tag">PRESET 03</span></div></div></div>
+        <div class="swiper-slide"><div class="proof-card pc4"><div class="proof-thumb"><div class="proof-overlay"></div></div><div class="proof-info"><div class="proof-style">صباح العيد</div><span class="proof-tag">PRESET 04</span></div></div></div>
+        <div class="swiper-slide"><div class="proof-card pc5"><div class="proof-thumb"><div class="proof-overlay"></div></div><div class="proof-info"><div class="proof-style">فناء العيد</div><span class="proof-tag">PRESET 05</span></div></div></div>
+        <div class="swiper-slide"><div class="proof-card pc6"><div class="proof-thumb"><div class="proof-overlay"></div></div><div class="proof-info"><div class="proof-style">مجلس دافئ</div><span class="proof-tag">PRESET 06</span></div></div></div>
+        <div class="swiper-slide"><div class="proof-card pc7"><div class="proof-thumb"><div class="proof-overlay"></div></div><div class="proof-info"><div class="proof-style">هيبة العيد</div><span class="proof-tag">PRESET 07</span></div></div></div>
+      </div>
+      <div class="swiper-pagination"></div>
+    </div>
+  </div>
+</section>
+
+<!-- NUMBERS SECTION -->
+<section id="numbers" style="padding:6rem 0;background:var(--blue);position:relative;overflow:hidden">
+  <div style="position:absolute;inset:0;background:radial-gradient(ellipse 60% 80% at 50% 50%,rgba(109,40,217,.3),transparent);pointer-events:none"></div>
+  <div class="wrap" style="position:relative;z-index:1">
+    <div style="text-align:center;margin-bottom:3rem">
+      <div class="sec-tag" style="background:rgba(255,255,255,.15);color:#fff;border-color:rgba(255,255,255,.25)">أرقام برق</div>
+      <h2 class="sec-h" style="color:#fff">الأرقام تتكلم ⚡</h2>
+      <p style="color:rgba(255,255,255,.7);font-size:1rem;margin-top:.5rem">نتائج حقيقية من عملاء حقيقيين</p>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem">
+      <div class="anim-in" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r-lg);padding:2rem;text-align:center;backdrop-filter:blur(10px)">
+        <div style="font-size:2.4rem;font-weight:800;color:#fff;margin-bottom:.3rem">+500</div>
+        <div style="font-size:.88rem;color:rgba(255,255,255,.7);font-weight:500">منتج تم تصويره بنجاح</div>
+      </div>
+      <div class="anim-in" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r-lg);padding:2rem;text-align:center;backdrop-filter:blur(10px);--d:.08s">
+        <div style="font-size:2.4rem;font-weight:800;color:#fff;margin-bottom:.3rem">48h</div>
+        <div style="font-size:.88rem;color:rgba(255,255,255,.7);font-weight:500">أقصى وقت للتسليم</div>
+      </div>
+      <div class="anim-in" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r-lg);padding:2rem;text-align:center;backdrop-filter:blur(10px);--d:.16s">
+        <div style="font-size:2.4rem;font-weight:800;color:#fff;margin-bottom:.3rem">%97</div>
+        <div style="font-size:.88rem;color:rgba(255,255,255,.7);font-weight:500">معدل رضا العملاء</div>
+      </div>
+      <div class="anim-in" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);border-radius:var(--r-lg);padding:2rem;text-align:center;backdrop-filter:blur(10px);--d:.24s">
+        <div style="font-size:2.4rem;font-weight:800;color:#fff;margin-bottom:.3rem">+50</div>
+        <div style="font-size:.88rem;color:rgba(255,255,255,.7);font-weight:500">علامة تجارية وثقت بنا</div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem">
+      <a href="https://wa.me/966562884656?text=السلام+عليكم،+أبي+أحجز+جلسة+تصوير+مع+برق+ستديو" target="_blank" style="text-decoration:none">
+        <button class="btn-primary" style="background:#fff;color:var(--blue);box-shadow:0 6px 20px rgba(0,0,0,.15)">احجز جلسة تصوير ⚡</button>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo-text">⚡ برق <span>ستديو</span></div>
+        <p class="footer-desc">خلك برق دايم ⚡ — تصوير منتجات وتهانئ العيد بالذكاء الاصطناعي بأجواء سينمائية فاخرة. نسلّم خلال 48 ساعة.</p>
+        <div class="footer-mini-cards">
+          <div class="fmc fmc1"><span class="fmc-icon">👑</span><div class="fmc-label">سير فرانسيس</div></div>
+          <div class="fmc fmc2"><span class="fmc-icon">🎀</span><div class="fmc-label">غريس</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">الروابط</div>
+        <ul class="footer-links">
+          <li><a href="#hero">الرئيسية</a></li>
+          <li><a href="#how">كيف يعمل</a></li>
+          <li><a href="#presets">الأستايلات</a></li>
+          <li><a href="#numbers">أرقام برق</a></li>
+          <li><a href="#social">معرض الأعمال</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">برق ستديو</div>
+        <ul class="footer-links">
+          <li><a href="https://barq-studio.com/#who" target="_blank">مين حنا؟</a></li>
+          <li><a href="https://barq-studio.com/#why" target="_blank">ليش برق؟</a></li>
+          <li><a href="https://barq-studio.com/#works" target="_blank">أعمالنا (+32 عمل)</a></li>
+          <li><a href="https://wa.me/966562884656" target="_blank">احجز جلسة تصوير ⚡</a></li>
+          <li><a href="https://barq-studio.com" target="_blank">barq-studio.com</a></li>
+        </ul>
+      </div>
+      <div>
+        <div class="footer-col-title">تواصل معنا</div>
+        <p class="nl-text">متاحين 7 أيام في الأسبوع عبر واتساب وانستقرام. ردنا أسرع من البرق ⚡</p>
+        <a href="https://wa.me/966562884656?text=السلام+عليكم،+أبي+أحجز+جلسة+تصوير+مع+برق+ستديو" target="_blank" style="text-decoration:none;display:block;margin-bottom:.8rem">
+          <button class="nl-btn" style="width:100%;border-radius:var(--r-full);padding:.8rem;font-size:.9rem;font-weight:800">💬 واتساب — 0562884656</button>
+        </a>
+        <div class="social-icons">
+          <a class="soc-btn" href="https://instagram.com/IBARQ_STUDIO" target="_blank" title="Instagram">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a class="soc-btn" href="https://x.com/iBarq_Sa" target="_blank" title="X / Twitter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.736l7.737-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </a>
+          <a class="soc-btn" href="https://wa.me/966562884656" target="_blank" title="WhatsApp">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+          </a>
+        </div>
+        <div style="margin-top:1rem;font-size:.78rem;color:rgba(255,255,255,.4)">@IBARQ_STUDIO على انستقرام وإكس</div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy" style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap">
+        <img src="public/00000-0٤.png" alt="برق ستديو" style="height:20px;width:auto;mix-blend-mode:screen;opacity:.85;object-fit:contain;transform:scaleX(.82);transform-origin:right">
+        <span>© 2025 برق ستديو — جميع الحقوق محفوظة</span>
+        <span style="color:rgba(255,255,255,.15)">|</span>
+        <span>صُنع بـ ♥ بواسطة <a href="https://solimanx.com" target="_blank" style="color:rgba(255,255,255,.45);text-decoration:none;transition:color .2s" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='rgba(255,255,255,.45)'">solimanx.com</a></span>
+      </div>
+      <div class="footer-legal">
+        <a href="https://barq-studio.com" target="_blank">barq-studio.com</a>
+        <a href="https://instagram.com/IBARQ_STUDIO" target="_blank">انستقرام</a>
+        <a href="https://wa.me/966562884656" target="_blank">واتساب</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toast"></div>
+
+<!-- SCRIPTS -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.js"></script>
+<script>
+/* ─── STATE ─── */
+let activePresetId=null,uploadedBase64=null,resultUrl=null;
+
+/* ─── CANVAS PARTICLES ─── */
+(function(){
+  const c=document.getElementById('hero-canvas'),ctx=c.getContext('2d');
+  let W,H,pts=[];
+  function resize(){W=c.width=window.innerWidth;H=c.height=window.innerHeight}
+  resize();window.addEventListener('resize',resize);
+  class P{
+    constructor(){this.reset()}
+    reset(){
+      this.x=Math.random()*W;this.y=Math.random()*H;
+      this.r=Math.random()*1.2+.3;
+      this.vx=(Math.random()-.5)*.25;this.vy=(Math.random()-.5)*.25;
+      this.p=Math.random()*Math.PI*2;
+    }
+    tick(){
+      this.x+=this.vx;this.y+=this.vy;this.p+=.018;
+      if(this.x<0||this.x>W||this.y<0||this.y>H)this.reset();
+    }
+    draw(){
+      const a=.05+Math.abs(Math.sin(this.p))*.15;
+      ctx.beginPath();ctx.arc(this.x,this.y,this.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(61,107,248,${a})`;ctx.fill();
+    }
+  }
+  for(let i=0;i<60;i++)pts.push(new P());
+  (function loop(){ctx.clearRect(0,0,W,H);pts.forEach(p=>{p.tick();p.draw()});requestAnimationFrame(loop)})();
+})();
+
+/* ─── GSAP SCROLL ─── */
+gsap.registerPlugin(ScrollTrigger);
+document.querySelectorAll('.anim-up').forEach(el=>{
+  const d=parseFloat(el.style.getPropertyValue('--d')||0);
+  gsap.to(el,{opacity:1,y:0,duration:.75,delay:d,ease:'power3.out',
+    scrollTrigger:{trigger:el,start:'top 88%'}});
+});
+document.querySelectorAll('.anim-in').forEach(el=>{
+  const d=parseFloat(el.style.getPropertyValue('--d')||0);
+  gsap.to(el,{opacity:1,scale:1,duration:.6,delay:d,ease:'back.out(1.5)',
+    scrollTrigger:{trigger:el,start:'top 90%'}});
+});
+
+/* ─── HERO ENTRANCE ─── */
+gsap.timeline({delay:.3})
+  .from('.hero-badge',{opacity:0,y:16,duration:.5,ease:'power3.out'})
+  .from('.hero-h1',{opacity:0,y:28,duration:.65,ease:'power3.out'},'-=.25')
+  .from('.hero-sub',{opacity:0,y:20,duration:.55,ease:'power3.out'},'-=.35')
+  .from('.hero-btns',{opacity:0,y:18,duration:.5,ease:'power2.out'},'-=.3')
+  .from('.hero-trust',{opacity:0,y:14,duration:.4,ease:'power2.out'},'-=.25')
+  .from('.hero-cards-wrap',{opacity:0,x:35,rotateY:-8,duration:.85,ease:'power3.out'},'-=.7')
+  .from('.hero-float-badge',{opacity:0,scale:.8,duration:.5,ease:'back.out(1.8)'},'-=.4')
+  .from('.hero-float-badge2',{opacity:0,scale:.8,duration:.5,ease:'back.out(1.8)'},'-=.3');
+
+/* ─── PRESETS ─── */
+document.querySelectorAll('.preset-card').forEach(card=>{
+  card.addEventListener('click',()=>{
+    document.querySelectorAll('.preset-card').forEach(c=>c.classList.remove('active'));
+    card.classList.add('active');
+    activePresetId=parseInt(card.dataset.id);
+    renderPresetForm(activePresetId);
+    gsap.fromTo(card,{scale:1},{scale:1.03,duration:.14,yoyo:true,repeat:1,ease:'power2.out'});
+    setTimeout(()=>document.getElementById('form-section').scrollIntoView({behavior:'smooth',block:'center'}),300);
+  });
+  card.addEventListener('mouseenter',()=>{if(!card.classList.contains('active'))gsap.to(card,{y:-5,duration:.25,ease:'power2.out'})});
+  card.addEventListener('mouseleave',()=>{if(!card.classList.contains('active'))gsap.to(card,{y:0,duration:.25,ease:'power2.out'})});
+});
+
+/* ─── UPLOAD ─── */
+const uz=document.getElementById('uploadZone'),pi=document.getElementById('photoInput'),pp=document.getElementById('photoPreview');
+uz.addEventListener('click',()=>pi.click());
+uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('drag-over')});
+uz.addEventListener('dragleave',()=>uz.classList.remove('drag-over'));
+uz.addEventListener('drop',e=>{
+  e.preventDefault();uz.classList.remove('drag-over');
+  const f=e.dataTransfer.files[0];
+  if(f&&f.type.startsWith('image/'))readFile(f);
+});
+pi.addEventListener('change',e=>{if(e.target.files[0])readFile(e.target.files[0])});
+function readFile(f){
+  const r=new FileReader();
+  r.onload=e=>{
+    uploadedBase64=e.target.result;
+    pp.src=uploadedBase64;pp.style.display='block';
+    gsap.from(pp,{opacity:0,scale:.88,duration:.4,ease:'back.out(1.6)'});
+    showToast('✓ تم رفع الصورة');
+  };
+  r.readAsDataURL(f);
+}
+
+/* ─── EID PROMPT PRESETS ─── */
+const GLOBAL_VISUAL_LOCK = `Use a luxury cinematic telephoto portrait style inspired by premium compressed-lens photography, with very shallow depth of field, heavy foreground blur, layered architectural framing, glowing warm bokeh, and elegant Arab visual occlusion. The subject must appear close to the camera, with the composition focused on the face and upper shoulders only, not the full body. Frame the person through blurred arches, lanterns, mashrabiya patterns, or soft foreground elements. Keep the face as the hero, with only part of the upper chest or shoulders visible. No full-body shot, no wide framing, no distant subject. The mood must feel intimate, premium, soft, festive, and luxurious, with realistic skin texture, natural expression, and refined Eid atmosphere.`;
+
+const TYPOGRAPHY_RULES = `ARABIC TYPOGRAPHY: Place the main greeting text at the top center only in two elegant Arabic lines: first line "{{greeting_line_1}}", second line "{{greeting_line_2}}" — both centered horizontally at the upper area with balanced spacing and clear readable elegant Arabic calligraphy. Then place the name alone at the bottom center: "{{recipient_name}}" — centered horizontally, clearly separated, refined elegant Arabic style. No text on the right, no text on the left, no side-aligned text, no corner placement, no random Arabic letters, no garbled text.`;
+
+const NEGATIVE = "full body, wide shot, distant subject, small face, extra people, duplicate person, distorted face, bad hands, unreadable Arabic text, broken letters, right-aligned text, left-aligned text, corner text, cluttered typography, watermark, logo, low quality, blurry face, plastic skin, overbeautified face, identity drift";
+
+const eidPromptPresets = [
+  {
+    id: 1,
+    arabicTitle: 'سينمائي فاخر',
+    englishKey: 'cinematic-luxury',
+    promptTemplate: `Create a premium ultra-realistic 3:4 Eid greeting portrait using the uploaded image {{uploaded_image}} as the only identity reference. Use uploaded photo input as the source face. Preserve the face from the uploaded image exactly. Based on the uploaded photo, place the person in a luxurious Saudi Eid setting with warm golden festive lighting, elegant Arabic architecture, premium realistic photography, high-end commercial quality, authentic Saudi/Gulf Eid atmosphere, one person only. Do not change the identity. Keep the result faithful to the uploaded image while presenting them in a polished festive portrait. ${GLOBAL_VISUAL_LOCK} ${TYPOGRAPHY_RULES}`,
+    negativePrompt: NEGATIVE
+  },
+  {
+    id: 2,
+    arabicTitle: 'أنثوي ناعم',
+    englishKey: 'soft-feminine-eid',
+    promptTemplate: `Create a premium ultra-realistic 3:4 Eid greeting portrait using the uploaded image {{uploaded_image}} as the only identity reference. Use uploaded photo input as the source face. Preserve the face from the uploaded image exactly. Based on the uploaded photo, style the result with a refined soft festive Saudi/Gulf mood, elegant modest styling, soft lantern bokeh, warm smile, graceful feminine-friendly luxury atmosphere, realistic premium photography, one person only. Preserve the uploaded identity and adapt the styling naturally into a classy Eid portrait. ${GLOBAL_VISUAL_LOCK} ${TYPOGRAPHY_RULES}`,
+    negativePrompt: NEGATIVE
+  },
+  {
+    id: 3,
+    arabicTitle: 'عصري راقٍ',
+    englishKey: 'modern-premium',
+    promptTemplate: `Create a premium ultra-realistic 3:4 Eid greeting portrait using the uploaded image {{uploaded_image}} as the only identity reference. Use uploaded photo input as the source face. Preserve the face from the uploaded image exactly. Based on the uploaded photo, create a modern polished premium Saudi-friendly Eid portrait with soft backlight, subtle festive decor, creamy background blur, and high-end editorial quality, one person only. Keep the uploaded identity intact while transforming the result into a modern Eid greeting poster. ${GLOBAL_VISUAL_LOCK} ${TYPOGRAPHY_RULES}`,
+    negativePrompt: NEGATIVE
+  },
+  {
+    id: 4,
+    arabicTitle: 'صباح العيد',
+    englishKey: 'eid-morning',
+    promptTemplate: `Create a premium ultra-realistic 3:4 Eid greeting portrait using the uploaded image {{uploaded_image}} as the only identity reference. Use uploaded photo input as the source face. Preserve the face from the uploaded image exactly. Based on the uploaded photo, place the person in an upscale Eid morning atmosphere with soft natural light, warm lantern glow, festive Arabic architecture, emotional classy mood, premium realistic photography, one person only. Keep the uploaded identity faithful and make the person the hero of an elegant morning Eid card. ${GLOBAL_VISUAL_LOCK} ${TYPOGRAPHY_RULES}`,
+    negativePrompt: NEGATIVE
+  },
+  {
+    id: 5,
+    arabicTitle: 'فناء العيد',
+    englishKey: 'eid-courtyard',
+    promptTemplate: `Create a premium ultra-realistic 3:4 Eid greeting portrait using the uploaded image {{uploaded_image}} as the only identity reference. Use uploaded photo input as the source face. Preserve the face from the uploaded image exactly. Based on the uploaded photo, place the person in a luxury Eid courtyard with warm sunrise light, rich bokeh, premium documentary-fashion realism, authentic Saudi festive atmosphere, one person only, high-end editorial quality. Naturally integrate the uploaded identity into the scene without changing facial structure. ${GLOBAL_VISUAL_LOCK} ${TYPOGRAPHY_RULES}`,
+    negativePrompt: NEGATIVE
+  },
+  {
+    id: 6,
+    arabicTitle: 'مجلس دافئ',
+    englishKey: 'warm-majlis',
+    promptTemplate: `Create a premium ultra-realistic 3:4 Eid greeting portrait using the uploaded image {{uploaded_image}} as the only identity reference. Use uploaded photo input as the source face. Preserve the face from the uploaded image exactly. Based on the uploaded photo, style the person inside a luxury warm indoor majlis atmosphere with beautiful blurred lantern lights, realistic skin texture, premium Eid visual tone, elegant Saudi/Gulf interior mood, one person only. Preserve the user's real identity while giving the portrait a classy festive finish. ${GLOBAL_VISUAL_LOCK} ${TYPOGRAPHY_RULES}`,
+    negativePrompt: NEGATIVE
+  },
+  {
+    id: 7,
+    arabicTitle: 'هيبة العيد',
+    englishKey: 'prestige-eid',
+    promptTemplate: `Create a premium ultra-realistic 3:4 Eid greeting portrait using the uploaded image {{uploaded_image}} as the only identity reference. Use uploaded photo input as the source face. Preserve the face from the uploaded image exactly. Based on the uploaded photo, create an elegant dark-toned premium festive scene with subtle golden lighting, soft luxurious background blur, calm confident mood, authentic Saudi/Gulf Eid presence, one person only, high-end editorial portrait quality. Keep the final result refined, prestigious, and faithful to the uploaded identity. ${GLOBAL_VISUAL_LOCK} ${TYPOGRAPHY_RULES}`,
+    negativePrompt: NEGATIVE
+  }
+];
+
+/* ─── HELPER: getEidPromptPreset ─── */
+function getEidPromptPreset(id, data = {}) {
+  const preset = eidPromptPresets.find(p => p.id === id);
+  if (!preset) return null;
+  const l1 = data.greeting_line_1 || 'تقبل الله طاعتكم';
+  const l2 = data.greeting_line_2 || 'كل عام وأنتم بخير';
+  const name = data.recipient_name || '';
+  const imgRef = data.uploaded_image || 'the uploaded image reference';
+  let prompt = preset.promptTemplate
+    .replace(/\{\{uploaded_image\}\}/g, imgRef)
+    .replace(/\{\{recipient_name\}\}/g, name)
+    .replace(/\{\{greeting_line_1\}\}/g, l1)
+    .replace(/\{\{greeting_line_2\}\}/g, l2);
+  return { prompt, negativePrompt: preset.negativePrompt, preset };
+}
+
+/* Legacy TEMPLATES map — points to new presets */
+const TEMPLATES = Object.fromEntries(
+  eidPromptPresets.map(p => [p.id, p.promptTemplate])
+);
+/* ─── PRESET CONFIG ─── */
+const PRESET_CONFIG = {
+  1:{
+    title:'سينمائي فاخر', icon:'🌙',
+    desc:'أجواء فاخرة من معمار عربي أصيل وإضاءة ذهبية',
+    fields:[
+      {
+        id:'p1_gender', type:'chips', label:'جنس الشخص',
+        options:['رجل','امرأة'],
+        default:'رجل',
+        promptKey:'gender',
+        map:{ 'رجل':'male, elegant thobe, Saudi formal attire', 'امرأة':'female, elegant abaya, Saudi feminine styling' }
+      },
+      {
+        id:'p1_lighting', type:'chips', label:'نوع الإضاءة',
+        options:['ذهبية دافئة','فضية باردة','انعكاس المشابيك'],
+        default:'ذهبية دافئة',
+        promptKey:'lighting',
+        map:{
+          'ذهبية دافئة':'warm golden hour lighting, amber tones',
+          'فضية باردة':'cool silver cinematic lighting, blue-toned shadows',
+          'انعكاس المشابيك':'mashrabiya lattice light patterns projected on face'
+        }
+      },
+      {id:'p1_line1',type:'text',label:'نص التهنئة الأول',default:'تقبل الله طاعتكم',promptKey:'greeting_line_1'},
+      {id:'p1_line2',type:'text',label:'نص التهنئة الثاني',default:'كل عام وأنتم بخير',promptKey:'greeting_line_2'},
+    ]
+  },
+  2:{
+    title:'أنثوي ناعم', icon:'🌸',
+    desc:'روح أنثوية راقية بأجواء لانترن ناعمة',
+    fields:[
+      {
+        id:'p2_color', type:'chips', label:'لون الزي',
+        options:['أبيض', 'ذهبي','وردي ناعم','أخضر فاتح','رمادي فضي'],
+        default:'أبيض',
+        promptKey:'attire_color',
+        map:{
+          'أبيض':'pure white elegant abaya',
+          'ذهبي':'gold embroidered abaya',
+          'وردي ناعم':'soft blush pink modest dress',
+          'أخضر فاتح':'sage green elegant abaya',
+          'رمادي فضي':'silver grey modest fashion'
+        }
+      },
+      {
+        id:'p2_mood', type:'chips', label:'المزاج',
+        options:['هادئة ودافئة','فرحة مبتهجة','رزينة أنيقة'],
+        default:'هادئة ودافئة',
+        promptKey:'mood_extra',
+        map:{
+          'هادئة ودافئة':'calm serene warm smile, gentle eyes',
+          'فرحة مبتهجة':'joyful bright smile, festive happiness',
+          'رزينة أنيقة':'composed dignified expression, subtle smile'
+        }
+      },
+      {id:'p2_line1',type:'text',label:'نص التهنئة الأول',default:'تقبل الله طاعتكم',promptKey:'greeting_line_1'},
+      {id:'p2_line2',type:'text',label:'نص التهنئة الثاني',default:'كل عام وأنتم بخير',promptKey:'greeting_line_2'},
+    ]
+  },
+  3:{
+    title:'عصري راقٍ', icon:'💎',
+    desc:'أسلوب إيديتوريال حديث بلمسة خليجية',
+    fields:[
+      {
+        id:'p3_style', type:'chips', label:'أسلوب الإطار',
+        options:['إيديتوريال فاشن','تجاري نظيف','فوتوغرافي فني'],
+        default:'إيديتوريال فاشن',
+        promptKey:'composition_style',
+        map:{
+          'إيديتوريال فاشن':'high-fashion editorial composition, Vogue-style framing',
+          'تجاري نظيف':'clean commercial portrait, bright neutral background',
+          'فوتوغرافي فني':'artistic photography, intentional asymmetry, negative space'
+        }
+      },
+      {
+        id:'p3_tone', type:'chips', label:'تون الألوان',
+        options:['دافئ كريمي','بارد محايد','كونتراست عالٍ'],
+        default:'دافئ كريمي',
+        promptKey:'color_tone',
+        map:{
+          'دافئ كريمي':'warm creamy color grade, golden undertones',
+          'بارد محايد':'cool neutral color grade, desaturated clean tones',
+          'كونتراست عالٍ':'high contrast bold color grade, deep shadows'
+        }
+      },
+      {id:'p3_line1',type:'text',label:'نص التهنئة الأول',default:'تقبل الله طاعتكم',promptKey:'greeting_line_1'},
+      {id:'p3_line2',type:'text',label:'نص التهنئة الثاني',default:'كل عام وأنتم بخير',promptKey:'greeting_line_2'},
+    ]
+  },
+  4:{
+    title:'صباح العيد', icon:'🌅',
+    desc:'أجواء صباح العيد بضوء طبيعي ذهبي',
+    fields:[
+      {
+        id:'p4_time', type:'chips', label:'وقت الصباح',
+        options:['فجر هادئ','شروق ذهبي','ضحى مشرقة'],
+        default:'شروق ذهبي',
+        promptKey:'morning_time',
+        map:{
+          'فجر هادئ':'pre-dawn blue hour, soft indigo sky, first light',
+          'شروق ذهبي':'golden sunrise, warm rays, glowing horizon',
+          'ضحى مشرقة':'bright morning light, clear warm atmosphere'
+        }
+      },
+      {
+        id:'p4_bg', type:'chips', label:'خلفية المشهد',
+        options:['أقواس معمارية','نخيل وطبيعة','نافذة عربية'],
+        default:'أقواس معمارية',
+        promptKey:'background_scene',
+        map:{
+          'أقواس معمارية':'blurred Islamic arched architecture background',
+          'نخيل وطبيعة':'blurred palm trees and nature, Saudi garden',
+          'نافذة عربية':'blurred ornate Arabic window with morning light'
+        }
+      },
+      {id:'p4_line1',type:'text',label:'نص التهنئة الأول',default:'تقبل الله طاعتكم',promptKey:'greeting_line_1'},
+      {id:'p4_line2',type:'text',label:'نص التهنئة الثاني',default:'كل عام وأنتم بخير',promptKey:'greeting_line_2'},
+    ]
+  },
+  5:{
+    title:'فناء العيد', icon:'🕌',
+    desc:'روح الفناء الأصيل بمعمار أندلسي وخليجي',
+    fields:[
+      {
+        id:'p5_courtyard', type:'chips', label:'نوع الفناء',
+        options:['نجدي تراثي','أندلسي تاريخي','قصر خليجي'],
+        default:'نجدي تراثي',
+        promptKey:'courtyard_type',
+        map:{
+          'نجدي تراثي':'Najdi traditional courtyard, clay architecture, wooden ornaments',
+          'أندلسي تاريخي':'Andalusian courtyard, mosaic tiles, orange trees, fountain',
+          'قصر خليجي':'Gulf palace courtyard, marble floors, ornate columns'
+        }
+      },
+      {
+        id:'p5_daypart', type:'chips', label:'توقيت المشهد',
+        options:['شروق','منتصف النهار','غروب'],
+        default:'شروق',
+        promptKey:'day_part',
+        map:{
+          'شروق':'golden sunrise light casting long warm shadows',
+          'منتصف النهار':'bright midday light, clear blue sky',
+          'غروب':'warm sunset, deep orange and amber glow'
+        }
+      },
+      {id:'p5_line1',type:'text',label:'نص التهنئة الأول',default:'تقبل الله طاعتكم',promptKey:'greeting_line_1'},
+      {id:'p5_line2',type:'text',label:'نص التهنئة الثاني',default:'كل عام وأنتم بخير',promptKey:'greeting_line_2'},
+    ]
+  },
+  6:{
+    title:'مجلس دافئ', icon:'🏮',
+    desc:'أجواء المجلس الدافئ بلانترن وأثاث فاخر',
+    fields:[
+      {
+        id:'p6_decor', type:'chips', label:'ديكور المجلس',
+        options:['سعودي تراثي','خليجي حديث','مغربي فاخر'],
+        default:'سعودي تراثي',
+        promptKey:'majlis_decor',
+        map:{
+          'سعودي تراثي':'traditional Saudi majlis, camel-wool cushions, wooden carved walls',
+          'خليجي حديث':'modern Gulf majlis, velvet seating, marble floors',
+          'مغربي فاخر':'Moroccan luxury riad interior, zellige tiles, lanterns'
+        }
+      },
+      {
+        id:'p6_lantern', type:'chips', label:'إضاءة اللانترن',
+        options:['ذهبية عميقة','برتقالية دافئة','بيضاء ناعمة'],
+        default:'ذهبية عميقة',
+        promptKey:'lantern_light',
+        map:{
+          'ذهبية عميقة':'deep golden lantern bokeh, rich amber light',
+          'برتقالية دافئة':'warm orange lantern glow, cozy atmosphere',
+          'بيضاء ناعمة':'soft white candlelight, gentle warm diffusion'
+        }
+      },
+      {id:'p6_line1',type:'text',label:'نص التهنئة الأول',default:'تقبل الله طاعتكم',promptKey:'greeting_line_1'},
+      {id:'p6_line2',type:'text',label:'نص التهنئة الثاني',default:'كل عام وأنتم بخير',promptKey:'greeting_line_2'},
+    ]
+  },
+  7:{
+    title:'هيبة العيد', icon:'👑',
+    desc:'حضور مهيب داكن بتفاصيل ذهبية راقية',
+    fields:[
+      {
+        id:'p7_prestige', type:'chips', label:'درجة الهيبة',
+        options:['ملكي فاخر','رئاسي راقٍ','أميري مهيب'],
+        default:'ملكي فاخر',
+        promptKey:'prestige_level',
+        map:{
+          'ملكي فاخر':'royal luxury presence, velvet and gold details',
+          'رئاسي راقٍ':'presidential dignified elegance, formal gravitas',
+          'أميري مهيب':'princely commanding presence, dark luxury tones'
+        }
+      },
+      {
+        id:'p7_rimlight', type:'chips', label:'إضاءة الحافة',
+        options:['ذهبية','فضية','نحاسية'],
+        default:'ذهبية',
+        promptKey:'rim_light',
+        map:{
+          'ذهبية':'gold rim light on edges, warm halo effect',
+          'فضية':'silver rim light, cool metallic edge highlight',
+          'نحاسية':'copper bronze rim light, rich warm metallic glow'
+        }
+      },
+      {id:'p7_line1',type:'text',label:'نص التهنئة الأول',default:'تقبل الله طاعتكم',promptKey:'greeting_line_1'},
+      {id:'p7_line2',type:'text',label:'نص التهنئة الثاني',default:'كل عام وأنتم بخير',promptKey:'greeting_line_2'},
+    ]
+  }
+};
+
+/* ─── RENDER PRESET FORM ─── */
+function renderPresetForm(id){
+  const cfg=PRESET_CONFIG[id];
+  const area=document.getElementById('presetFormArea');
+  let html=`<div class="form-preset-header">
+    <div class="fph-icon">${cfg.icon}</div>
+    <div><div class="fph-title">${cfg.title}</div><div class="fph-sub">${cfg.desc}</div></div>
+  </div>`;
+  html+=`<div class="form-divider">خيارات الأستايل</div>`;
+  cfg.fields.forEach(f=>{
+    html+=`<div class="field" id="field_wrap_${f.id}">`;
+    html+=`<label>${f.label}</label>`;
+    if(f.type==='chips'){
+      html+=`<div class="chip-group" data-field="${f.id}">`;
+      f.options.forEach((opt,i)=>{
+        const isActive=opt===f.default?'active':'';
+        html+=`<span class="chip ${isActive}" data-val="${opt}" onclick="selectChip(this)">${opt}</span>`;
+      });
+      html+=`</div>`;
+    } else if(f.type==='text'){
+      html+=`<input type="text" class="dyn-field" id="${f.id}" value="${f.default||''}" placeholder="${f.default||''}">`;
+    } else if(f.type==='select'){
+      html+=`<select class="dyn-select" id="${f.id}">`;
+      f.options.forEach(opt=>{ html+=`<option value="${opt}">${opt}</option>`; });
+      html+=`</select>`;
+    }
+    html+=`</div>`;
+  });
+  area.innerHTML=html;
+  // animate in
+  gsap.from(area.children,{opacity:0,y:16,duration:.4,stagger:.07,ease:'power2.out'});
+}
+
+function selectChip(el){
+  const group=el.parentElement;
+  group.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function getFieldValues(id){
+  const cfg=PRESET_CONFIG[id];
+  const vals={};
+  cfg.fields.forEach(f=>{
+    if(f.type==='chips'){
+      const group=document.querySelector(`.chip-group[data-field="${f.id}"]`);
+      const active=group?.querySelector('.chip.active');
+      const val=active?.dataset.val||f.default;
+      vals[f.promptKey]=f.map?f.map[val]:val;
+    } else {
+      const el=document.getElementById(f.id);
+      vals[f.promptKey]=el?.value||f.default||'';
+    }
+  });
+  return vals;
+}
+
+/* ─── BUILD PROMPT ─── */
+function buildPrompt(id,name,extraVals,imageRef){
+  let tpl=TEMPLATES[id];
+  // replace all placeholders (global replace)
+  tpl=tpl.replace(/\{\{uploaded_image\}\}/g, imageRef||'the uploaded portrait photo');
+  tpl=tpl.replace(/\{\{greeting_line_1\}\}/g, extraVals.greeting_line_1||'تقبل الله طاعتكم');
+  tpl=tpl.replace(/\{\{greeting_line_2\}\}/g, extraVals.greeting_line_2||'كل عام وأنتم بخير');
+  tpl=tpl.replace(/\{\{recipient_name\}\}/g, name||'');
+  // inject extra chip selections as appended details
+  const extras=Object.entries(extraVals)
+    .filter(([k])=>!['greeting_line_1','greeting_line_2'].includes(k))
+    .map(([k,v])=>v).filter(Boolean).join('. ');
+  if(extras) tpl=tpl+` EXTRA DETAILS: ${extras}.`;
+  return tpl;
+}
+
+/* ─── LOADER MESSAGES ─── */
+const MSGS=['لحظة يا غالي، الذكاء يشتغل لك 🌙','صبّر نفسك، النتيجة تستاهل ⭐','يا رب تعجبك، احنا نعمل عليها 🎉','قريبًا وصل، لا تغلق الصفحة 🤲','الصورة في الطريق إليك يا بطل ✨'];
+let msgT,msgI=0;
+function startMsgs(){
+  const el=document.getElementById('loaderMsg');
+  el.style.transition='opacity .35s';msgI=0;el.textContent=MSGS[0];
+  msgT=setInterval(()=>{
+    el.style.opacity='0';
+    setTimeout(()=>{msgI=(msgI+1)%MSGS.length;el.textContent=MSGS[msgI];el.style.opacity='1'},350);
+  },2500);
+}
+function stopMsgs(){clearInterval(msgT)}
+function animSteps(){
+  setTimeout(()=>document.getElementById('step1').classList.add('done'),800);
+  setTimeout(()=>document.getElementById('step2').classList.add('done'),4000);
+  setTimeout(()=>document.getElementById('step3').classList.add('done'),7500);
+}
+
+/* ─── GENERATE ─── */
+async function generateGreeting(){
+  const key=document.getElementById('apiKeyInput').value.trim();
+  const name=document.getElementById('recipientName').value.trim();
+  if(!key){showToast('⚠ أدخل مفتاح API أولاً');return}
+  if(!activePresetId){showToast('⚠ اختر أستايلاً أولاً');return}
+  if(!uploadedBase64){showToast('⚠ ارفع صورتك أولاً');return}
+  if(!name){showToast('⚠ أدخل اسم المستلم');return}
+
+  const extraVals=getFieldValues(activePresetId);
+  const preset=eidPromptPresets.find(p=>p.id===activePresetId);
+  const negativePrompt=preset?preset.negativePrompt:'';
+  const prompt=buildPrompt(activePresetId,name,extraVals,uploadedBase64);
+  const ld=document.getElementById('loading');
+  ld.classList.add('active');
+  startMsgs();animSteps();
+  const bar=document.getElementById('loaderBar');
+  bar.style.animation='none';bar.offsetHeight;bar.style.animation='';
+  // Reset steps
+  ['step1','step2','step3'].forEach(s=>document.getElementById(s).classList.remove('done'));
+
+  try{
+    const res=await fetch('https://fal.run/fal-ai/flux/dev',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Key ${key}`},
+      body:JSON.stringify({prompt,negative_prompt:negativePrompt,image_url:uploadedBase64,num_inference_steps:28,guidance_scale:3.5,image_size:'portrait_4_3'})
+    });
+    const data=await res.json();
+    if(!res.ok)throw new Error(data.detail||data.error||'خطأ من الخادم');
+    const url=data.images?.[0]?.url;
+    if(!url)throw new Error('لم يُعاد رابط الصورة');
+    resultUrl=url;
+    showResult(url,name,extraVals);
+  }catch(e){showToast(`✕ ${e.message}`)}
+  finally{stopMsgs();ld.classList.remove('active')}
+}
+
+/* ─── SHOW RESULT ─── */
+function showResult(url,name,extraVals){
+  const l1=extraVals?.greeting_line_1||'تقبل الله طاعتكم';
+  const l2=extraVals?.greeting_line_2||'كل عام وأنتم بخير';
+  const sec=document.getElementById('result');
+  document.getElementById('resultImg').src=url;
+  document.getElementById('greetingText').innerHTML=
+    `بمناسبة هذا العيد السعيد المبارك، نتقدم بأجمل التهاني وأصدق التبريكات إلى <span class="result-name">${name||'الحبيب'}</span>.<br><br>${l1||'تقبل الله طاعتكم'}<br>${l2||'كل عام وأنتم بخير'}<br><br>أعاده الله عليكم وعلى أحبابكم بالخير واليمن والبركات.`;
+  sec.style.display='block';
+  gsap.timeline({delay:.2})
+    .from('.result-img-wrap',{opacity:0,scale:.8,duration:.9,ease:'back.out(1.7)'})
+    .from('#greetingCard',{opacity:0,y:25,duration:.7,ease:'power3.out'},'-=.4')
+    .from('.result-actions',{opacity:0,y:16,duration:.5,ease:'power2.out'},'-=.3');
+  setTimeout(()=>sec.scrollIntoView({behavior:'smooth',block:'center'}),300);
+}
+
+/* ─── DOWNLOAD / SHARE ─── */
+function downloadResult(){
+  if(!resultUrl){showToast('لا توجد صورة');return}
+  const a=document.createElement('a');a.href=resultUrl;a.download='eid-greeting.jpg';a.click();
+}
+async function shareResult(){
+  if(!resultUrl){showToast('لا توجد صورة');return}
+  if(navigator.share){try{await navigator.share({title:'تهنئة العيد',url:resultUrl})}catch{}}
+  else{navigator.clipboard?.writeText(resultUrl);showToast('✓ تم نسخ الرابط')}
+}
+
+/* ─── TOAST ─── */
+let toastT;
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),3400);
+}
+
+/* ─── SWIPER ─── */
+new Swiper('.swiper-proof',{
+  slidesPerView:2,spaceBetween:14,loop:true,
+  autoplay:{delay:2400,disableOnInteraction:false},
+  pagination:{el:'.swiper-pagination',clickable:true},
+  breakpoints:{640:{slidesPerView:3,spaceBetween:16},1024:{slidesPerView:5,spaceBetween:20}}
+});
+</script>
+</body>
+</html>

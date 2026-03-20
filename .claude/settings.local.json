@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:barq-studio.com)",
+      "Bash(grep -v '^[[:space:]]*$')",
+      "Bash(grep -v '^[a-zA-Z0-9\\\\-\\\\.]*$')",
+      "Bash(grep -v '^$')",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Bash(done)",
+      "Bash(gh repo:*)"
+    ]
+  }
+}
