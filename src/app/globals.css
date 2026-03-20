@@ -376,6 +376,9 @@ body {
   cursor: pointer;
   transition: border-color .2s, transform .2s;
   aspect-ratio: .72;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 .hero-tpl:hover   { transform: translateY(-4px); }
 .hero-tpl.active  { border-color: var(--blue-l); }
@@ -383,6 +386,7 @@ body {
 .hero-tpl-overlay {
   position: absolute; inset: 0;
   background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.7) 100%);
+  pointer-events: none;
 }
 .hero-tpl-label {
   position: absolute;
@@ -623,6 +627,9 @@ body {
   transition: border-color .25s, box-shadow .25s, transform .25s;
   aspect-ratio: .72;
   background: var(--blue-xl);
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 .preset-card:hover {
   transform: translateY(-5px);
@@ -644,6 +651,7 @@ body {
   position: absolute;
   inset: 0;
   background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,.55) 100%);
+  pointer-events: none;
 }
 /* Apple glass label */
 .preset-glass-label {
@@ -712,6 +720,9 @@ body {
   transition: border-color .2s, background .2s;
   background: var(--bg-soft);
   margin-bottom: 1.5rem;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
 }
 .upload-zone:hover {
   border-color: var(--blue);

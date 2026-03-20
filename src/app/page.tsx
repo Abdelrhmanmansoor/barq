@@ -392,7 +392,7 @@ export default function Home() {
                   id="main-image-upload"
                   type="file"
                   accept="image/*"
-                  style={{ display: 'none' }}
+                  style={{ position: 'absolute', opacity: 0, width: 0, height: 0, overflow: 'hidden' }}
                   onChange={e => { const f = e.target.files?.[0]; if (f) handleImageSelect(f); }}
                 />
               </label>
