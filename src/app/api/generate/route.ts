@@ -56,9 +56,10 @@ export async function POST(request: NextRequest) {
     });
 
   } catch (error) {
-    console.error('[/api/generate]', error);
+    const msg = error instanceof Error ? error.message : String(error);
+    console.error('[/api/generate] caught:', msg);
     return NextResponse.json(
-      { success: false, error: 'Internal server error' },
+      { success: false, error: msg },
       { status: 500 }
     );
   }
