@@ -30,22 +30,26 @@ class ImageGeneratorClient {
 
   async generateImage(params: GenerateImageParams): Promise<GenerateImageResponse> {
     try {
-      // Build the image reference: prefer imageUrl, fall back to base64
-      const imageDataUrl = params.imageUrl
-        ? params.imageUrl
-        : params.image
-          ? `data:image/jpeg;base64,${params.image}`
-          : null;
+      // Step 1: get a hosted URL — nano-banana-2/edit requires https:// URLs, not base64
+      let hostedUrl: string;
 
-      if (!imageDataUrl) {
-        return { success: false, error: 'No image provided — an uploaded photo is required.' };
+      if (params.imageUrl && params.imageUrl.startsWith('http')) {
+        hostedUrl = params.imageUrl;
+      } else if (params.image) {
+        // Upload base64 to fal.ai storage → get a real URL
+        const buffer = Buffer.from(params.image, 'base64');
+        const blob = new Blob([buffer], { type: 'image/jpeg' });
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        hostedUrl = await (fal.storage as any).upload(blob);
+      } else {
+        return { success: false, error: 'No image provided.' };
       }
 
-      // nano-banana-2/edit (Google Gemini 2.5 Flash) input shape
+      // Step 2: call nano-banana-2/edit with the hosted URL
       const input = {
         prompt:        params.prompt,
-        image_urls:    [imageDataUrl],  // array — the uploaded face photo (identity reference)
-        aspect_ratio:  '3:4',           // portrait format for Eid greeting cards
+        image_urls:    [hostedUrl],   // must be https:// URL
+        aspect_ratio:  '3:4',
         num_images:    1,
         output_format: 'jpeg',
         resolution:    '1K',

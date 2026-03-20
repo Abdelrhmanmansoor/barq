@@ -15,7 +15,13 @@
       "Read(//c/Users/abdel/Desktop/barq/**)",
       "Bash(vercel env:*)",
       "WebFetch(domain:fal.ai)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(vercel --prod)",
+      "Bash(vercel ls:*)",
+      "Bash(vercel alias:*)",
+      "Bash(vercel domains:*)",
+      "Bash(vercel logs:*)",
+      "Bash(vercel inspect:*)"
     ]
   }
 }
