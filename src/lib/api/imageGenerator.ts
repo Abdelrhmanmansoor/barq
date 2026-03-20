@@ -1,5 +1,4 @@
 import { fal } from '@fal-ai/client';
-import type { NanoBananaProEditInput } from '@fal-ai/client';
 
 // fal-ai/nano-banana-pro/edit — Gemini Flash image editing, supports resolution param
 const FAL_MODEL = 'fal-ai/nano-banana-pro/edit';
@@ -43,7 +42,7 @@ class ImageGeneratorClient {
         hostedUrl = await fal.storage.upload(blob);
       }
       // Step 2: call the model with correct typed input
-      const falInput: NanoBananaProEditInput = {
+      const falInput = {
         prompt:        params.prompt,
         image_urls:    [hostedUrl],
         aspect_ratio:  '3:4',
