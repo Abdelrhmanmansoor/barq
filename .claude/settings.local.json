@@ -10,7 +10,9 @@
       "Bash(done)",
       "Bash(gh repo:*)",
       "Bash(sort -k6,7)",
-      "Bash(npm run:*)"
+      "Bash(npm run:*)",
+      "Bash(vercel --yes --prod)",
+      "Read(//c/Users/abdel/Desktop/barq/**)"
     ]
   }
 }

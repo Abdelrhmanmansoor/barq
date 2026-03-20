@@ -1,12 +1,17 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 import { toast } from 'react-hot-toast';
 import {
-  Zap, CheckCircle2, Star, Camera, Palette, PenLine, Wand2,
+  CheckCircle2, Star, Camera, Palette, PenLine, Wand2,
   Upload, Download, Share2, RotateCcw, Users, Clock, ThumbsUp, Building2,
   ChevronLeft,
 } from 'lucide-react';
+
+/* ── Banner images with natural dimensions captured on load ── */
+type BannerInfo = { w: number; h: number };
+
 import { useAppStore } from '@/lib/store';
 import { imageGenerator } from '@/lib/api/imageGenerator';
 import PaymentModal, { PricingTier } from '@/components/PaymentModal';
@@ -43,6 +48,8 @@ export default function Home() {
   const [nameError, setNameError]         = useState('');
   const [imageError, setImageError]       = useState('');
   const [showPayment, setShowPayment]     = useState(false);
+  const [banner1, setBanner1]             = useState<BannerInfo | null>(null);
+  const [banner2, setBanner2]             = useState<BannerInfo | null>(null);
   const fileInputRef                      = useRef<HTMLInputElement>(null);
   const stats                             = getStats();
 
@@ -149,8 +156,7 @@ export default function Home() {
       <nav className="nav-wrap">
         <div className="nav-inner">
           <a href="#" className="nav-logo">
-            <Zap size={16} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '4px' }} />
-            برق ستديو
+            <img src="/Barq-Logo1.png" alt="برق ستديو" className="nav-logo-img" />
           </a>
           <ul className="nav-links">
             <li><a href="#how">كيف يعمل</a></li>
@@ -211,22 +217,51 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Cards */}
+          {/* Banner Photos */}
           <div style={{ position: 'relative' }}>
             <div className="hero-float-badge">
               <Users size={13} style={{ display: 'inline', verticalAlign: 'middle', marginLeft: '4px' }} />
               +50 علامة تجارية
             </div>
-            <div className="hero-cards-wrap">
-              {PRESETS.slice(0, 3).map(p => (
-                <div key={p.id} className="hcard">
-                  <div className="hcard-inner">
-                    <img src={p.img} alt={p.name} />
-                    <div className="hcard-overlay" />
-                    <div className="hcard-label">{p.name}</div>
-                  </div>
+            <div className="hero-banners">
+              {/* Banner 1 — portrait (tall) */}
+              <div className="hero-banner-card">
+                <img
+                  src="/Saudi_family_celebrating_202603200328.jpeg"
+                  alt="عائلة سعودية"
+                  onLoad={e => {
+                    const t = e.currentTarget;
+                    setBanner1({ w: t.naturalWidth, h: t.naturalHeight });
+                  }}
+                />
+                <div className="banner-overlay" />
+                {banner1 && (
+                  <span className="banner-dim-tag">{banner1.w} × {banner1.h}</span>
+                )}
+              </div>
+              {/* Banner 2 — landscape */}
+              <div className="hero-banner-card">
+                <img
+                  src="/Saudi_family_celebrating_202603200325.jpeg"
+                  alt="عائلة سعودية"
+                  onLoad={e => {
+                    const t = e.currentTarget;
+                    setBanner2({ w: t.naturalWidth, h: t.naturalHeight });
+                  }}
+                />
+                <div className="banner-overlay" />
+                {banner2 && (
+                  <span className="banner-dim-tag">{banner2.w} × {banner2.h}</span>
+                )}
+              </div>
+              {/* Third card — first preset */}
+              <div className="hcard" style={{ borderRadius: 'var(--r-lg)', overflow: 'hidden', position: 'relative', border: '1.5px solid rgba(61,107,248,.12)', boxShadow: '0 8px 32px rgba(0,0,0,.1)' }}>
+                <div className="hcard-inner" style={{ height: '210px' }}>
+                  <img src={PRESETS[3].img} alt={PRESETS[3].name} />
+                  <div className="hcard-overlay" />
+                  <div className="hcard-label">{PRESETS[3].name}</div>
                 </div>
-              ))}
+              </div>
             </div>
             <div className="hero-float-badge2">Powered by fal.ai FLUX Dev</div>
           </div>
@@ -452,21 +487,62 @@ export default function Home() {
       </section>
 
       {/* ── FOOTER ── */}
-      <footer style={{ background: 'var(--text)', color: 'rgba(255,255,255,.6)', padding: '3rem 2rem', textAlign: 'center' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '.4rem', fontSize: '1.1rem', fontWeight: 800, color: '#fff', marginBottom: '.5rem' }}>
-            <Zap size={18} /> برق ستديو
+      <footer className="site-footer">
+        <div className="footer-inner">
+          {/* Brand */}
+          <div>
+            <img src="/Barq-Logo1.png" alt="برق ستديو" className="footer-brand-logo" />
+            <p className="footer-brand-desc">
+              منصة توليد تهنئة عيد فاخرة بالذكاء الاصطناعي — اصنع تهنئتك في ثوانٍ وأبهر أحبابك
+            </p>
           </div>
-          <p style={{ fontSize: '.85rem', marginBottom: '1.5rem' }}>تهنئة عيد فاخرة بالذكاء الاصطناعي</p>
-          <div style={{ display: 'flex', gap: '2rem', justifyContent: 'center', flexWrap: 'wrap', fontSize: '.85rem', marginBottom: '2rem' }}>
-            {['#how:كيف يعمل', '#presets:الأستايلات', '#numbers:أرقامنا', '#form:ابدأ الآن'].map(item => {
-              const [href, label] = item.split(':');
-              return <a key={href} href={href} style={{ color: 'rgba(255,255,255,.5)', textDecoration: 'none' }}>{label}</a>;
-            })}
+          {/* Links */}
+          <div>
+            <p className="footer-col-title">روابط سريعة</p>
+            <ul className="footer-links">
+              <li><a href="#how">كيف يعمل</a></li>
+              <li><a href="#presets">الأستايلات</a></li>
+              <li><a href="#numbers">أرقامنا</a></li>
+              <li><a href="#form">ابدأ الآن</a></li>
+            </ul>
           </div>
-          <div style={{ borderTop: '1px solid rgba(255,255,255,.08)', paddingTop: '1.5rem', fontSize: '.78rem' }}>
+          {/* Contact */}
+          <div>
+            <p className="footer-col-title">تواصل معنا</p>
+            <ul className="footer-links">
+              <li>
+                <a href="https://wa.me/96500000000" target="_blank" rel="noopener noreferrer">
+                  واتساب
+                </a>
+              </li>
+              <li>
+                <a href="mailto:hello@barq-studio.com">
+                  hello@barq-studio.com
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        {/* Bottom bar */}
+        <div className="footer-bottom">
+          <span className="footer-copy">
             © {new Date().getFullYear()} برق ستديو · جميع الحقوق محفوظة
-          </div>
+          </span>
+          <a
+            href="https://solimanx.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-credit"
+            title="solimanx.com"
+          >
+            <img
+              src="/00000-0٤.png"
+              alt="سليمان"
+              className="footer-credit-logo"
+            />
+            <span className="footer-credit-text">by solimanx</span>
+          </a>
         </div>
       </footer>
 
