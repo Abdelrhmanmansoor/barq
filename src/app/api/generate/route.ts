@@ -6,8 +6,26 @@ import { getEidPromptPreset } from '@/lib/ai/eidPromptPresets';
  * POST /api/generate
  * Body: { name, imageData, presetId?, greetingLine1?, greetingLine2?, email? }
  */
+/**
+ * Image generation is an experimental feature. It is enabled only when
+ * IMAGE_GENERATION_ENABLED is explicitly set to 'true'. While disabled we
+ * return an honest "feature unavailable" response — we do NOT fake a
+ * third-party fault.
+ */
+const IMAGE_GENERATION_ENABLED = process.env.IMAGE_GENERATION_ENABLED === 'true';
+
 export async function POST(request: NextRequest) {
   try {
+    if (!IMAGE_GENERATION_ENABLED) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Image generation is an experimental feature and is currently unavailable. Please check back later.',
+        },
+        { status: 503 }
+      );
+    }
+
     const body = await request.json();
     const {
       name,
